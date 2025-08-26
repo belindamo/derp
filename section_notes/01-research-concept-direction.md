@@ -1,4 +1,4 @@
-Refine section 1 of this research concept and direction based on&#x20;
+Refine section 1 of this research concept and direction based on current&#x20;
 
 
 
