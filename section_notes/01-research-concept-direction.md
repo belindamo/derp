@@ -2,7 +2,7 @@ Create a section 2 based on the refined section 1 and the drafted section 2, as 
 
 
 
-NEU
+NEURIPS format
 
 
 
