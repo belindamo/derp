@@ -1,4 +1,4 @@
-Create a section 2 based on the section 2 draft so far and on ELBO and DERP.&#x20;
+Create a section 2 based on the section 2 draft so far and on ELBO and DERP. Make sure section 1 is considered too.&#x20;
 
 
 
