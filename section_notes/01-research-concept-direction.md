@@ -1,4 +1,6 @@
-Please refine this research concept and direction
+Please refine this research concept and direction. in the style of neurips.&#x20;
+
+
 
 # Distribution Enforcement via Random Probe and Distribution Nudging
 
