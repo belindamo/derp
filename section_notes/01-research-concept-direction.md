@@ -1,6 +1,6 @@
 Refine section 1 of this research concept and direction based on current writing and lit review.&#x20;
 
-Write in the style of neurips. Thi [https://arxiv.org/pdf/1908.09772](https://arxiv.org/pdf/1908.09772)
+Write in the style of neurips. This is [https://arxiv.org/pdf/1908.09772](https://arxiv.org/pdf/1908.09772)
 
 # Distribution Enforcement via Random Probe and Distribution Nudging
 
