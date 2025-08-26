@@ -1,4 +1,8 @@
-Create a section 2 based on the refined section 1 and the drafted section 2, as wel on ELBO and DERP. Make sure section 1 is considered too.&#x20;
+Create a section 2 based on the refined section 1 and the drafted section 2, as well as on ELBO and DERP. Make sure section 1 is considered too.&#x20;
+
+
+
+
 
 
 
