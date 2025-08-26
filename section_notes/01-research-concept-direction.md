@@ -72,7 +72,7 @@ Our approach represents a paradigm shift from *passive* to *active* distribution
 
 
 
-**Section 2. Technical Framework**
+# **Section 2. Technical Framework**
 
 
 
