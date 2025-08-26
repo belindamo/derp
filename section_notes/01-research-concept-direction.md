@@ -1,3 +1,7 @@
+Refine section 1 of this research concept and direction based on&#x20;
+
+
+
 # Distribution Enforcement via Random Probe and Distribution Nudging
 
 \*\*Section 1. Motivation\*\*
