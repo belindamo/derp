@@ -66,21 +66,13 @@ Our approach represents a paradigm shift from *passive* to *active* distribution
 
 **Section 2. Technical Framework**
 
-
-
 ***Notations***
 
 Capital letter, such as X, is a r.v. (random variable) on R^1, while <u>**X**</u> is a r.v. on higher dimensions; sampled values are denoted in lower case x, <u>**x**</u>, respectively.
 
-
-
 p(.) is used to denote a generic p.d.f. (probability density function) or a probability function; it is also used to denote the probability law or distribution. When there is a danger of inducing confusion, it will be written more explicitly - So, p(x|z) \= p(x|Z\=z) is the conditional distribution of x given Z\=z. q(.) \= q(.; theta) is used to identify the current trained version of p(.), with parameters (usually the layer weights) theta - In most cases, theta will be suppressed. As a more complicated example, suppose <u>**x**</u> is an image, <u>**z**</u> is its feature representation, <u>**x**</u>^hat is the recovered image via <u>**z**</u>. Then 
 
-
-
 &#x9;p(<u>**x**</u>^hat | <u>**x**</u>) \= integral ( p(<u>**x**</u>^hat | <u>**z**</u>) p(<u>**z**</u>|<u>**x**</u>) d<u>**z**</u> )
-
-
 
 ***VAE (Variational AutoEncoder)***
 
