@@ -53,11 +53,13 @@ Our approach represents a paradigm shift from *passive* to *active* distribution
 3. **Impact Validation**: Framework affects broad areas including VAEs, VQ methods, and distributional verification—reshaping how we approach probabilistic modeling in deep learning
 
 **Key Research Questions:**
-- How can we efficiently verify high-dimensional distributional assumptions during training?
-- What is the fundamental cause of posterior collapse beyond KL regularization imbalance?
-- Can statistical testing be integrated into neural network optimization without computational overhead?
+
+* How can we efficiently verify high-dimensional distributional assumptions during training?
+* What is the fundamental cause of posterior collapse beyond KL regularization imbalance?
+* Can statistical testing be integrated into neural network optimization without computational overhead?
 
 **Experimental Direction:**
-- Compare passive vs. active distributional modeling across standard benchmarks
-- Investigate computational efficiency of random probe testing vs. full multivariate tests
-- Analyze identifiability properties of DERP-trained models
+
+* Compare passive vs. active distributional modeling across standard benchmarks
+* Investigate computational efficiency of random probe testing vs. full multivariate tests
+* Analyze identifiability properties of DERP-trained models
