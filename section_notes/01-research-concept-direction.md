@@ -1,7 +1,6 @@
 Revise:
 
-* add to first section, the simulate annealing aspect bc this first randomly initializing and then slowly converging
-*
+* add to first section, the simulate anneal
 
 \---
 
