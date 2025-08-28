@@ -3,6 +3,4 @@
 
 
 
-the experiments should showcase the idea. be able to run and demonstrate that some engineering properties like speed of conver
-
-*
+the experiments should showcase the id
