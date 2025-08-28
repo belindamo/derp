@@ -1,2 +1,2 @@
-* refine proof for section 2 of research concept and direction
+* Refine proof for section 2 of research concept and direction
 *
