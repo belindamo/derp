@@ -1,6 +1,6 @@
 Revise:
 
-* a first section, the simul
+* add to first section, the simul
 
 \---
 
