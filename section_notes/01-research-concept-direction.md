@@ -1,7 +1,7 @@
 Revise:
 
 * add to first section, the simulate annealing concept because this first randomly initializes and then slowly converges
-*
+* flesh the sec
 
 \---
 
