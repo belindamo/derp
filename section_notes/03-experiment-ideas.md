@@ -3,4 +3,6 @@
 
 
 
-the experiments should showcase the idea. be able to run and demonstrate some engineering properties like speed of convergence and quality of result. optional is ablation studies
+the experiments should showcase the idea. be able to run and demonstrate that some engineering properties like speed of convergence and q
+
+*
