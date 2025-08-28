@@ -4,5 +4,3 @@
 
 
 the experiment is:
-
-*
