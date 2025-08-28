@@ -2,7 +2,9 @@ Revise:
 
 * add to first section, the simulate annealing concept because this first randomly initializes and then slowly converges
 * flesh the second section
-* revise K-S distance (Kolmogorov-Smirnov) from max
+* revise K-S distance (Kolmogorov-Smirnov) from max function to average function, potentially facilitate fast convergence.
+* take out softmax in K-S.
+*
 
 \---
 
