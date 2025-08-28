@@ -6,8 +6,6 @@ Revise:
 * take out softmax in K-S.
 * research on the folllowing:  given marginal one-dimensional Gaussian distribution, higher dimensional distribution is standard Gaussian, and vice versa.
 
-
-
 \---
 
 # Distribution Enforcement via Random Probe and Distribution Nudging
