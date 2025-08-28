@@ -1,6 +1,6 @@
 Revise:
 
-* emphasize first
+* emphasize first section,
 
 \---
 
