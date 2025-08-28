@@ -1,5 +1,5 @@
 * Research more to figure out this: if all 1 dimensional projections are Gaussian, then the original multivariate distribution is also Gaussian
-  * if you can't find support for this, then list
+  * if you can't find support for this, then list if as
 
 # Literature Review: Distribution Enforcement via Random Probe and Distribution Nudging
 
