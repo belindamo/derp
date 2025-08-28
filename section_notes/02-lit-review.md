@@ -1,4 +1,4 @@
-* Research more if all 1 dimensional projections are Gaussian, then the original multivariate distribution is also Gaussian
+* Research more to figureif all 1 dimensional projections are Gaussian, then the original multivariate distribution is also Gaussian
 
 # Literature Review: Distribution Enforcement via Random Probe and Distribution Nudging
 
