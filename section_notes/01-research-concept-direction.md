@@ -1,6 +1,6 @@
 Revise:
 
-* add to first section, the simulate annealing aspec
+* emphasize first section, the simul
 
 \---
 
