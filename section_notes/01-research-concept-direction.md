@@ -1,6 +1,6 @@
 Revise:
 
-* emphasize first section,
+* a first section, the simul
 
 \---
 
