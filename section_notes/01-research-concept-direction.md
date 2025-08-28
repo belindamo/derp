@@ -1,3 +1,5 @@
+
+
 * Research more to figure out this and replace 2.3: if all 1 dimensional projections are Gaussian, then the original multivariate distribution is also Gaussian
   * if you can't find support for this, then list it as a conjecture&#x20;
 * replace 2.1 with simulate annealing idea without specific temperature formula
@@ -123,3 +125,4 @@ where λ\_T(t) \= λ₀/τ(t) increases enforcement strength as temperature cool
 * Random variables: X (univariate), **X** (multivariate)
 * Cooling schedule parameter α determines convergence rate
 * Enforcement weight λ\_T(t) varies inversely with temperature
+
