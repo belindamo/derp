@@ -1,6 +1,6 @@
 Revise:
 
-* emphasize first section, the simul
+* add to first section, the simulate annealing aspect&#x20;
 
 \---
 
