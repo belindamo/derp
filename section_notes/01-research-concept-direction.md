@@ -4,7 +4,7 @@ Revise:
 * flesh the second section
 * revise K-S distance (Kolmogorov-Smirnov) from max function to average function, potentially facilitate fast convergence.
 * take out softmax in K-S.
-* research on the&#x20;
+* research on the folllo
 
 \---
 
