@@ -1,3 +1,5 @@
+Do a bit more research on this: given marginal one-dimensional Gaussian distribution, higher dimensional distribution is standard Gaussian, and vice versa.
+
 # Literature Review: Distribution Enforcement via Random Probe and Distribution Nudging
 
 This literature review examines the current state of distributional assumptions in deep learning, with particular focus on distribution enforcement, posterior collapse in VAEs, vector quantization, and probabilistic verification methods. Our analysis reveals significant gaps in active distributional assumption management and verification.
