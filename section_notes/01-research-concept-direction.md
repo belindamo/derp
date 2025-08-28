@@ -1,6 +1,6 @@
 Revise:
 
-* add to first section, the simulate annealing aspect by f
+* add to first section, the simulate annealing aspect by first randomly initializing and then slow
 
 \---
 
