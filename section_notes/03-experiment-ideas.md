@@ -3,6 +3,6 @@
 
 
 
-the experiments should showcase the idea. be able to run and demonstrate some engineering properties like speed of convergence and quality of result.&#x20;
+the experiments should showcase the idea. be able to run and&#x20;
 
 *
