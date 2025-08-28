@@ -2,7 +2,7 @@ Revise:
 
 * add to first section, the simulate annealing concept because this first randomly initializes and then slowly converges
 * flesh the second section
-* revise K-S distance (Kolmogorov-Smirnov) from max&#x20;
+* revise K-S distance (Kolmogorov-Smirnov) from max
 
 \---
 
