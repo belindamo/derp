@@ -10,7 +10,6 @@
 
 **Literature-Level Hypothesis Validation**: Applied Stanford research methodology to identify assumptions spanning multiple papers and propose hypotheses that could reshape distributional modeling in deep learning.
 
-
 \---
 
 # Distribution Enforcement via Random Probe and Distribution Nudging
@@ -87,17 +86,17 @@ Our approach represents a paradigm shift from *passive* to *active* distribution
 
 Building on simulated annealing principles, we introduce a cooling schedule for distributional constraints:
 
-τ(t) = τ₀ · exp(-αt) where α controls convergence rate
+τ(t) \= τ₀ · exp(-αt) where α controls convergence rate
 
 Initially, high temperature allows wide deviations from target distributions, gradually decreasing to enforce strict compliance. This mirrors the annealing process where random initialization gradually converges to stable distributional states.
 
-### 2.2 Modified K-S Distance for Differentiability  
+### 2.2 Modified K-S Distance for Differentiability
 
 Instead of classical maximum-based Kolmogorov-Smirnov distance:
-D_max = max_x |F₁(x) - F₂(x)|
+D\_max \= max\_x |F₁(x) - F₂(x)|
 
 We employ average-based distance for smooth backpropagation:
-D_avg = ∫ |F₁(x) - F₂(x)| dx / ∫ dx
+D\_avg \= ∫ |F₁(x) - F₂(x)| dx / ∫ dx
 
 This modification enables gradient-based optimization while preserving statistical discrimination power, facilitating faster convergence.
 
@@ -107,14 +106,14 @@ We leverage the fundamental theorem: infinite families of (n-1)-dimensional marg
 
 ### 2.4 Enhanced DERP Loss Function
 
-ℒ_DERP = ℒ_reconstruction + β_KL · ℒ_KL + λ_T(t) · D_avg(q(**z**|**x**), p(**z**))
+ℒ\_DERP \= ℒ\_reconstruction + β\_KL · ℒ\_KL + λ\_T(t) · D\_avg(q(**z**|**x**), p(**z**))
 
-where λ_T(t) = λ₀/τ(t) increases enforcement strength as temperature cools, ensuring gradual transition from exploration to exploitation in the distributional constraint space.
+where λ\_T(t) \= λ₀/τ(t) increases enforcement strength as temperature cools, ensuring gradual transition from exploration to exploitation in the distributional constraint space.
 
 ### 2.5 Enhanced Notations
 
-- Temperature parameter τ(t) controls distributional enforcement strength
-- Statistical distances: D_max (classical), D_avg (modified for differentiability)
-- Random variables: X (univariate), **X** (multivariate)
-- Cooling schedule parameter α determines convergence rate
-- Enforcement weight λ_T(t) varies inversely with temperature
+* Temperature parameter τ(t) controls distributional enforcement strength
+* Statistical distances: D\_max (classical), D\_avg (modified for differentiability)
+* Random variables: X (univariate), **X** (multivariate)
+* Cooling schedule parameter α determines convergence rate
+* Enforcement weight λ\_T(t) varies inversely with temperature
