@@ -1,6 +1,6 @@
 Revise:
 
-* add to first section, the simulate annealing aspect&#x20;
+* add to first section, the simulate annealing aspect by first random
 
 \---
 
