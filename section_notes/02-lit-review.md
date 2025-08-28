@@ -1,4 +1,4 @@
-Do a bit more research on this: given marginal one-dimensional Gaussian distribution, higher dimensional distribution is standard Gaussian, and vice versa.
+* if all 1 dimensional projections are Gaussian, then the original multivariate distribution is also Gaussian
 
 # Literature Review: Distribution Enforcement via Random Probe and Distribution Nudging
 
