@@ -1,4 +1,4 @@
-* Research more to figure out this: if all 1 dimensional projections are Gaussian, then the original multivariate distribution is also Gaussian
+* Research more to figure out this and replace 2.: if all 1 dimensional projections are Gaussian, then the original multivariate distribution is also Gaussian
   * if you can't find support for this, then list it as a conjecture&#x20;
 
 
