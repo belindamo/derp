@@ -5,7 +5,6 @@ Revise:
 * revise K-S distance (Kolmogorov-Smirnov) from max function to average function, potentially facilitate fast convergence.
 * take out softmax in K-S.
 * research on the folllowing:  given marginal one-dimensional Gaussian distribution, higher dimensional distribution is standard Gaussian, and vice versa.
-*
 
 \---
 
