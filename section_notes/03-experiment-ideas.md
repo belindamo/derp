@@ -3,6 +3,6 @@
 
 
 
-the experiments should showcase the idea. be able to run and demonstrate that some engineering prope
+the experiments should showcase the idea. be able to run and demonstrate that some engineering properties li
 
 *
