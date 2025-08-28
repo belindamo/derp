@@ -1,6 +1,6 @@
 Revise:
 
-* add to first section, the simul
+* emphasize first section&#x20;
 
 \---
 
