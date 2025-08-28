@@ -1,3 +1,5 @@
+
+
 Revise:
 
 * add to first section, the simulate annealing concept because this first randomly initializes and then slowly converges
@@ -87,3 +89,4 @@ p(.) is used to denote a generic p.d.f. (probability density function) or a prob
 ***VAE (Variational AutoEncoder)***
 
 The input data consists of N i.i.d. samples from p(.) \= p (<u>**x**</u>, y), where <u>**x**</u> is m-by-m, representing an image, Y is a label from {0,1}.  The unobservable <u>**z**</u> is a hidden k-vector representation of <u>**x**</u>, with a priori distribution p(<u>**z**</u>) \= N (0, **I**\_k) where **I**\_k is the identity matrix of dimension k by k. Thus, we are working with the triplet p(<u>**x**</u>, <u>**z**</u>, y) where distributional manipulations are carried out.
+
