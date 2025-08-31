@@ -24,7 +24,6 @@
 
 * **Independent Variables**:
   * Enforcement method: {Passive (standard VAE), Active (DERP-VAE)}
-  * Temperature schedule: {Fixed, Exponential decay, Linear decay}
   * Random probe count: {1, 5, 10, 20 projections}
   * Enforcement weight λ: {0.1, 0.5, 1.0, 2.0}
 * **Dependent Variables**:
