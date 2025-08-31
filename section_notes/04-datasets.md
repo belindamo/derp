@@ -185,4 +185,3 @@ beta_dist = np.load('data/synthetic/beta_distribution.npy')
 **Total Storage**: 6.2GB via Git LFS  
 **Research-Ready**: All datasets validated and documented for DERP experiments
 
-*Following Stanford scientific research methodology for literature-level hypothesis testing*
