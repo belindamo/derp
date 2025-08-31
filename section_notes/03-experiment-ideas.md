@@ -1,6 +1,6 @@
 # Experiment Ideas: Distribution Enforcement via Random Probe (DERP)
 
-# Experimental Constraints
+## Experimental Constraints
 
 * Input data conforms with VAE paper specifications
 * Algorithms must implement DERP framework from sections 1-2
