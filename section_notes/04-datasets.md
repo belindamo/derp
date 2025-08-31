@@ -172,7 +172,7 @@ dsprites_factors = np.load('data/processed/dsprites/labels.npy')
 gaussian_2d = np.load('data/synthetic/gaussian_mixture_2d.npy')
 gaussian_100d = np.load('data/synthetic/gaussian_100d.npy')
 beta_dist = np.load('data/synthetic/beta_distribution.npy')
-```
+
 
 ### Version Control
 - **Git LFS**: All datasets managed for reproducibility
