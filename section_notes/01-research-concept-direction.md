@@ -116,8 +116,6 @@ This modification enables gradient-based optimization while preserving statistic
 
 **Cramer-Wold Characterization**: We leverage the fundamental theorem that multivariate normality is characterized by the normality of all one-dimensional linear projections. This provides direct theoretical justification for using random one-dimensional projections in distributional testing.
 
-**Manjunath-Parthasarathy Insight**: The theorem reveals that finite collections of (n-1)-dimensional marginal projections are insufficient for characterizing joint Gaussianity—counterexamples exist where all such marginals are Gaussian but the joint distribution is non-Gaussian. However, infinite families of (n-1)-dimensional projections do provide unique characterization.
-
 This theoretical foundation motivates our focus on one-dimensional rather than higher-dimensional random projections for computational efficiency while maintaining statistical power.
 
 ### 2.4 Enhanced DERP Loss Function
