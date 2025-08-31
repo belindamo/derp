@@ -38,8 +38,7 @@
 
 1. **Baseline**: Train standard VAE with β-VAE variants (β ∈ {0.5, 1.0, 2.0})
 2. **DERP-VAE**: Train with random probe enforcement using modified K-S distance
-3. **Temperature Ablation**: Compare different cooling schedules
-4. **Probe Count Study**: Evaluate efficiency vs. accuracy trade-offs
+3. **Probe Count Study**: Evaluate efficiency vs. accuracy trade-offs
 
 **Success Metrics**:
 
