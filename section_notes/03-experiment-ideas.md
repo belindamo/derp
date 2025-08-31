@@ -189,19 +189,7 @@
 
 **Timeline**: 1-2 weeks (focus on training dynamics analysis)
 
-## Ablation Studies
-
-### A1: Modified K-S Distance vs. Classical Maximum-Based Distance
-
-Compare gradient flow and convergence properties of average-based vs. maximum-based Kolmogorov-Smirnov distances in neural network optimization.
-
-### A2: Probe Projection Strategies
-
-Evaluate random projections vs. learned projections vs. PCA for distributional testing efficiency and statistical power.
-
-### A3: Multi-Scale Distributional Enforcement
-
-Test hierarchical enforcement at different network layers vs. single-layer enforcement in deep architectures.
+##
 
 ## Resource Requirements
 
