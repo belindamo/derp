@@ -1,4 +1,4 @@
 Datasets and repositories to gather ---
 
-* Grab the VAE package
+* Grab the open source VAE repo
 *
