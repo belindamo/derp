@@ -1,17 +1,6 @@
 # Experiment Ideas: Distribution Enforcement via Random Probe (DERP)
 
-## Research Methodology Framework
-
-Following Stanford research methodology, our experiments test literature-level hypotheses about active vs. passive distributional modeling. Each experiment follows the structure:
-
-1. **Clear thesis statement** with testable hypotheses
-2. **Assumptions** being challenged from prior work
-3. **Independent variables** (what we manipulate)
-4. **Dependent variables** (what we measure)
-5. **Validity threats** and mitigation strategies
-6. **Resource requirements** and expected timeline
-
-## Experimental Constraints
+# Experimental Constraints
 
 * Input data conforms with VAE paper specifications
 * Algorithms must implement DERP framework from sections 1-2
