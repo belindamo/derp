@@ -1,20 +1,28 @@
 
 
-add cramer-wold theorem as reference.&#x20;
-
-\---
-
 # Literature Review: Distribution Enforcement via Random Probe and Distribution Nudging
 
-This literature review examines the current state of distributional assumptions in deep learning, with particular focus on distribution enforcement, posterior collapse in VAEs, vector quantization, and probabilistic verification methods. Our analysis reveals significant gaps in active distributional assumption management and verification.
+This comprehensive literature review examines the current state of distributional assumptions in deep learning, with particular focus on distribution enforcement, posterior collapse in VAEs, vector quantization, and probabilistic verification methods. Based on analysis of 34 papers from leading venues (2018-2025), our analysis reveals significant gaps in active distributional assumption management and verification.
+
+## Theoretical Foundations
+
+### Cramér-Wold Theorem and Random Projections
+
+The theoretical foundation of our Random Probe methodology rests on the **Cramér-Wold theorem**: a multivariate distribution is uniquely determined by the collection of all its one-dimensional marginal distributions. Recent advances have provided both theoretical improvements and practical applications of this fundamental result.
+
+**Quantitative Extensions** (Bobkov & Götze, 2025) establish quantitative bounds for Zolotarev distances between probability measures via one-dimensional projections, providing theoretical foundation for convergence rates in random probe testing. For elliptical distributions, Fraiman et al. (2022) prove that only (d²+d)/2 specific line projections suffice for complete characterization, offering optimal efficiency bounds.
+
+**Practical Applications** demonstrate the power of projection-based testing. Fraiman et al. (2021) show that Cramér-Wold-based testing is "powerful, computationally efficient, and dimension-independent," extending even to infinite-dimensional spaces. Chen et al. (2024) validate random projections for high-dimensional model checking when dimension substantially exceeds sample size, directly validating our approach.
 
 ## Key Papers on Distribution Enforcement
 
-### Probability Engineering (Zhang, 2025)
+### Foundational Distribution Enforcement
 
+#### Probability Engineering (Zhang, 2025)
 * **Contribution:** Introduces "Probability Engineering" paradigm treating learned distributions as modifiable engineering artifacts
 * **Assumption:** Traditional approaches assume distributions are static objects to be fitted
 * **Gap:** High-level conceptual framework lacks technical implementation details and empirical validation
+* **DERP Relevance:** Directly addresses our concept of active distribution modification rather than passive fitting
 
 ### Distributional Adversarial Loss (Ahmadi et al., 2024)
 
