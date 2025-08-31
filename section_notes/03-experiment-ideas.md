@@ -52,7 +52,7 @@
 * **Implementation effects**: Identical architecture except for DERP components
 * **Hyperparameter sensitivity**: Grid search with cross-validation
 
-**Timeline**: 2-3 weeks (1 week implementation, 2 weeks experimentation)
+
 
 ### Experiment 2: Vector Quantization Codebook Optimization via Distributional Constraints
 
