@@ -52,7 +52,7 @@ The literature reveals a systematic gap between theoretical assumptions and prac
 
 We propose that random low-dimensional projections can efficiently capture essential distributional properties of high-dimensional representations through a **temperature-driven statistical testing framework**. Like simulated annealing, our approach begins with high-temperature random initialization of distributional probes and gradually converges to stable distributional constraints through controlled cooling of acceptance thresholds.
 
-**Random Probe (RP)** leverages the **Cramer-Wold theorem**: if all one-dimensional linear projections ⟨X,θ⟩ are Gaussian, then the multivariate distribution X is also Gaussian. While the **Manjunath-Parthasarathy theorem** shows that finite collections of (n-1)-dimensional marginal projections do not guarantee joint Gaussianity, only infinite families of such projections provide unique characterization. This provides theoretical foundation for distributional testing via random one-dimensional projections.
+**Random Probe (RP)** leverages the **Cramer-Wold theorem**: if all one-dimensional linear projections ⟨X,θ⟩ are Gaussian, then the multivariate distribution X is also Gaussian. This provides theoretical foundation for distributional testing via random one-dimensional projections.
 
 Our key insight extends beyond classical statistical testing: **Modified Kolmogorov-Smirnov distance using average rather than maximum deviation** provides smoother gradients for backpropagation while maintaining statistical power. This average-based distance metric facilitates faster convergence during distributional enforcement by avoiding the non-differentiable maximum operation inherent in classical K-S tests.
 
