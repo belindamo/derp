@@ -17,7 +17,6 @@
 3. **PT-LiRPA Verification (2025)**: 3.31X improvement using sampling-based distributional bounds
 4. **Neural Statistical Testing**: AUROC ≈ 1 for neural network-based normality testing
 
-\---
 
 # Literature Review: Distribution Enforcement via Random Probe and Distribution Nudging
 
