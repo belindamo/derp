@@ -1,5 +1,3 @@
-
-
 # Datasets for Distribution Enforcement via Random Probe (DERP) Research
 
 ## Dataset Collection Complete ✅
