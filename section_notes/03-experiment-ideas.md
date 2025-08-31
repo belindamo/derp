@@ -52,8 +52,6 @@
 * **Implementation effects**: Identical architecture except for DERP components
 * **Hyperparameter sensitivity**: Grid search with cross-validation
 
-
-
 ### Experiment 2: Vector Quantization Codebook Optimization via Distributional Constraints
 
 **Thesis Statement**: Explicit enforcement of uniform codebook utilization through statistical constraints prevents codebook collapse and improves representation quality compared to heuristic methods.
