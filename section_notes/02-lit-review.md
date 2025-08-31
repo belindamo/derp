@@ -1,3 +1,5 @@
+
+
 add latest variations or benchmarks of classical VAE
 
 
@@ -184,3 +186,4 @@ Our literature analysis reveals that DERP addresses fundamental gaps in current 
 4. **Broad Applicability**: Framework applies across multiple deep learning architectures and tasks
 
 The convergence of evidence across multiple research areas supports the need for active distributional management in deep learning, positioning DERP as a timely and impactful contribution to the field.
+
