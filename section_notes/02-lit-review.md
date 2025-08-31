@@ -1,3 +1,5 @@
+add latest variations or benchmarks of classical VAE
+
 # Literature Review: Distribution Enforcement via Random Probe and Distribution Nudging
 
 This comprehensive literature review examines the current state of distributional assumptions in deep learning, with particular focus on distribution enforcement, posterior collapse in VAEs, vector quantization, and probabilistic verification methods. Based on analysis of 34 papers from leading venues (2018-2025), our analysis reveals significant gaps in active distributional assumption management and verification.
