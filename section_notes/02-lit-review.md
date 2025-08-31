@@ -1,7 +1,5 @@
 add latest variations or benchmarks of classical VAE
 
-
-
 \---
 
 # Literature Review: Distribution Enforcement via Random Probe and Distribution Nudging
