@@ -1,4 +1,4 @@
-For another experiment, duplicate experiments/exp\_20250904\_180037 into a new experiments/exp\_<id> folder, to improve the experiment. You want to make changes to :&#x20;
+For another experiment, duplicate experiments/exp\_20250904\_180037 into a new experiments/exp\_<id> folder, to improve the experiment. You want to make changes to new experiment folder:&#x20;
 
 * change hidden dims in VAE implementations from 32 to 4.&#x20;
 * Make sure labels are available
