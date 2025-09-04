@@ -18,7 +18,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # fetches entire git history
+          fetch-depth: 1 # shallow clone to avoid LFS issues
+          lfs: false # Skip all LFS files
 
       - name: Hypothesis
         uses: anthropics/claude-code-action@beta
@@ -68,7 +69,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # fetches entire git history
+          fetch-depth: 1 # shallow clone to avoid LFS issues
+          lfs: false # Skip all LFS files
 
       - name: Literature Review
         uses: anthropics/claude-code-action@beta
@@ -120,7 +122,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # fetches entire git history
+          fetch-depth: 1 # shallow clone to save bandwidth
+          lfs: false # Skip LFS to avoid budget issues
 
       - name: Experiment Ideas
         uses: anthropics/claude-code-action@beta
@@ -146,7 +149,7 @@ jobs:
             You are a research assistant using scientific thinking and rigorous methodology.
             
             THINK DEEPLY AND THOROUGHLY about experimental design.
-            Use ultra-careful planning to design rigorous experiments that an AI agent could run.
+            Carefully plan to design rigorous experiments that an AI agent could run.
             Check proposal.jsonl and run.jsonl to see what has been done in the past. 
             Update section_notes/03-experiment-ideas.md with your ideas. Update proposal.jsonl with your proposals.
           mcp_config: |
@@ -169,21 +172,44 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          lfs: true  # Enable LFS checkout
-          fetch-depth: 0 # fetches entire git history
+          lfs: false  # Disable LFS initially to avoid budget issues
+          fetch-depth: 1 # shallow clone
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Git LFS
+      - name: Setup Git LFS (Smart Mode)
         run: |
-          git lfs install
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Ensure LFS tracking is set up for data files
-          git lfs track "data/**"
+          # Check LFS budget before operations
+          echo "Checking Git LFS budget status..."
+          
+          # Install LFS without downloading files
+          git lfs install --skip-smudge
+          
+          # Only track files >100MB to conserve LFS budget
+          echo "Setting up conservative LFS tracking (>100MB only)..."
+          
+          track_large_files() {
+            find data -type f -size +100M 2>/dev/null | while read file; do
+              echo "Tracking large file: $file ($(du -h "$file" | cut -f1))"
+              git lfs track "$file"
+            done
+          }
+          
+          # Selective tracking for truly large files only
+          # Comment out smaller file types to save LFS budget
           git lfs track "*.tar.gz"
           git lfs track "*.zip"
-          git lfs track "*.7z"
+          git lfs track "*.h5"
+          git lfs track "*.safetensors"
+          git lfs track "*.bin"
+          # Skip these to save budget:
+          # git lfs track "*.pkl"
+          # git lfs track "*.npz"
+          # git lfs track "*.npy"
+          
+          track_large_files
           git add .gitattributes || true
 
       - name: Setup Python
@@ -227,6 +253,17 @@ jobs:
           direct_prompt: |
             ⚠️ CRITICAL - MUST READ FIRST - GIT LFS CONFIGURATION ⚠️
             ================================================================
+            
+            IMPORTANT LFS RULES TO PREVENT BUDGET ISSUES:
+            1. DO NOT track small CSV, JSON, or text files with Git LFS
+            2. ONLY use LFS for files larger than 50MB
+            3. When downloading datasets:
+               - Small files (<50MB): Add directly to Git
+               - Large files (>50MB): Will be automatically tracked with LFS
+            4. Before adding any file, check its size with: du -h filename
+            5. The workflow will automatically handle LFS for large files
+            
+            ================================================================
             THIS REPOSITORY USES GIT LFS FOR ALL DATA FILES
             
             FORBIDDEN ACTIONS:
@@ -261,6 +298,8 @@ jobs:
             ================================================================
             
             You are a research assistant using scientific thinking and rigorous methodology.
+            
+            NO SYNTHETIC DATA - ONLY DOWNLOAD ACTUAL DATA.
             
             STEP 1 - CHECK EXISTING DATASETS FIRST:
             ========================================
@@ -514,13 +553,43 @@ jobs:
             - Ensure data/README.md lists all downloaded datasets with their locations
             
             FINAL COMMIT (refer to LFS instructions at top):
-            After all downloads complete, commit everything with Git LFS as shown at the top of these instructions.
+            After all downloads complete, commit everything with Git LFS:
+            ```bash
+            # CRITICAL: Ensure Git LFS is properly configured
+            git lfs install
+            git lfs track "data/**"
+            git add .gitattributes
+            git commit -m "chore: Configure Git LFS for data files"
+            
+            # Stage all data files with LFS
+            git add data/
+            git status  # Verify files are being tracked by LFS
+            
+            # Commit the datasets
+            git commit -m "feat: Add datasets for experiments via Git LFS
+            
+            Datasets included:
+            $(ls -1 data/ | head -10)
+            
+            Total size: $(du -sh data/ | cut -f1)"
+            
+            # Push LFS objects and commits
+            git lfs push origin HEAD --all
+            git push origin HEAD
+            ```
+            
+            IMPORTANT: The datasets MUST be committed with Git LFS for the 'run' job to access them!
             Remember: NEVER add data/ to .gitignore - we use Git LFS for large files.
             
             Once done:
             - Update section_notes/04-datasets.md with dataset analysis
-            - Create data/README.md with complete dataset catalog
-            - Ensure datasets are committed with Git LFS
+            - Create data/README.md with complete dataset catalog INCLUDING:
+              * Exact file paths for each dataset
+              * File formats and sizes
+              * Number of samples/records
+              * Features/columns description
+              * How to load each dataset in Python
+            - Ensure datasets are committed with Git LFS and pushed
           mcp_config: |
             {
               "mcpServers": {
@@ -541,25 +610,29 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          lfs: true  # Pull LFS files (datasets)
-          fetch-depth: 0 # fetches entire git history
+          lfs: false  # Skip LFS initially
+          fetch-depth: 1 # shallow clone
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-
-      - name: Verify datasets availability
+      
+      - name: Selective LFS Pull
         run: |
-          echo "Checking for datasets..."
-          if [ -d "data" ]; then
-            echo "Data directory found. Contents:"
-            ls -la data/
-            du -sh data/* 2>/dev/null || echo "No data files yet"
-          else
-            echo "No data directory found - will need to download datasets"
-          fi
+          # Only pull essential LFS files if budget allows
+          echo "Checking LFS budget..."
+          git lfs install --skip-smudge
+          
+          # Try to pull only essential data files, handle failure gracefully
+          echo "Attempting selective LFS pull..."
+          git lfs pull --include="*.csv,*.json,*.jsonl" --exclude="*.wav,*.au,*.mp3,*.npz,*.pkl" || {
+            echo "WARNING: LFS pull failed (likely budget exceeded)"
+            echo "Creating mock data for experiments..."
+            mkdir -p data/mock
+            echo '{"mock": true, "message": "Using mock data due to LFS budget"}' > data/mock/dataset.json
+          }
 
       - name: Install tools
         run: |
@@ -575,6 +648,19 @@ jobs:
           pip install jupyterlab notebook ipython
           pip install tqdm wandb tensorboard mlflow
           pip install pytest pytest-cov black flake8
+          # Additional experiment tools
+          pip install optuna hyperopt ray[tune] # Hyperparameter optimization
+          pip install shap lime eli5 # Model interpretability
+          pip install plotly bokeh altair # Advanced visualization
+          pip install dask joblib # Parallel processing
+          pip install h5py zarr # Data storage formats
+          pip install pyarrow fastparquet # Efficient data formats
+          pip install streamlit gradio # Quick demos/interfaces
+          pip install gymnasium stable-baselines3 # RL environments
+          pip install prophet statsforecast # Time series
+          pip install opencv-python pillow albumentations # Computer vision
+          pip install nltk spacy gensim # NLP tools
+          pip install rdkit biopython # Chemistry/biology
           # Ensure Git LFS is tracking data files
           git lfs pull
 
@@ -598,47 +684,283 @@ jobs:
                     { "tool": "Bash", "pattern": "python*|python3*", "decision": "allow" },
                     { "tool": "Bash", "pattern": "ls*|mkdir*|find*|du*|cat*|head*|tail*", "decision": "allow" },
                     { "tool": "Bash", "pattern": "git clone*|git pull*|git fetch*", "decision": "allow" },
-                    { "tool": "Bash", "pattern": "wget*|curl*", "decision": "allow" },
+                    { "tool": "Bash", "pattern": "wget*|curl*|aria2c*", "decision": "allow" },
                     { "tool": "Bash", "pattern": "cd*|pwd*|echo*", "decision": "allow" },
-                    { "tool": "Bash", "pattern": "cp*|mv*|rm*", "decision": "allow" },
+                    { "tool": "Bash", "pattern": "cp*|mv*|rm*|touch*", "decision": "allow" },
                     { "tool": "Bash", "pattern": "jupyter*|ipython*", "decision": "allow" },
-                    { "tool": "Bash", "pattern": "pytest*|black*|flake8*", "decision": "allow" }
+                    { "tool": "Bash", "pattern": "pytest*|black*|flake8*", "decision": "allow" },
+                    { "tool": "Bash", "pattern": "tar*|unzip*|gzip*|7z*", "decision": "allow" },
+                    { "tool": "Bash", "pattern": "nvidia-smi*|gpustat*", "decision": "allow" },
+                    { "tool": "Bash", "pattern": "htop*|top*|free*|df*", "decision": "allow" },
+                    { "tool": "Bash", "pattern": "tensorboard*|mlflow*|wandb*", "decision": "allow" },
+                    { "tool": "Bash", "pattern": "streamlit*|gradio*", "decision": "allow" },
+                    { "tool": "Bash", "pattern": "optuna*|ray*", "decision": "allow" },
+                    { "tool": "Bash", "pattern": "grep*|sed*|awk*", "decision": "allow" }
                   ]
                 }
               }
             }
           direct_prompt: |
-            ⚠️ ULTRA THINKING MODE - THINK DEEPLY BEFORE ACTING ⚠️
+            ⚠️ DEEP THINKING MODE - THINK DEEPLY BEFORE ACTING ⚠️
             ================================================================
             You are a research assistant using scientific thinking and rigorous methodology.
             
             THINK DEEPLY AND THOROUGHLY about the experimental implementation.
-            Use ULTRA-CAREFUL reasoning and execution at every step.
-
-            REFLECT on your trajectory every ~10 steps and at the end to check for hallucinations
-            TEST key pieces of your code before running full experiments
-            DEBUG where needed - don't skip error handling
-            DO NOT create synthetic data except for testing parts of your code - it does not count as experiment results
-            VERIFY accuracy of all claims and results - check for hallucinations
+            CAREFULLY reason and execute at every step.
+          
+            OVERALL: 
+            - REFLECT on your trajectory every ~10 steps and at the end to check for hallucinations
+            - TEST key pieces of your code before running full experiments
+            - DEBUG where needed - don't skip error handling
+            - AVOID SYNTHETIC DATA FOR EXPERIMENT RESULTS -  USE REAL DATA. Avoid synthetic data except for testing parts of your code - it does not count as experiment results
+            - VERIFY accuracy of all claims and results - check for hallucinations
+            - EVALUATE REALISTICITY OF THE RESULTS - it is okay to fail an experiment. The most important thing is to learn from failures.
+            - IF USER SPECIFIES AN EXISTING EXPERIMENT TO EDIT, IMPROVE THAT EXPERIMENT RATHER THAN CREATING A NEW ONE
+          
+            
+            STEP 1: ANALYZE RESEARCH TYPE AND INSTALL NECESSARY PACKAGES
+            -------------------------------------------------------------
+            First, examine the proposal.jsonl and section_notes to understand the research domain.
+            Then install domain-specific packages:
+            
+            ```python
+            import json
+            
+            # Read the proposal to understand research type
+            with open('proposal.jsonl', 'r') as f:
+                proposals = [json.loads(line) for line in f]
+            
+            # Analyze research domain from proposals and notes
+            research_domains = []
+            for proposal in proposals:
+                # Check keywords in proposal to identify domain
+                text = str(proposal).lower()
+                if any(word in text for word in ['nlp', 'language', 'text', 'bert', 'gpt', 'transformer']):
+                    research_domains.append('nlp')
+                if any(word in text for word in ['vision', 'image', 'cnn', 'resnet', 'yolo', 'segmentation']):
+                    research_domains.append('computer_vision')
+                if any(word in text for word in ['reinforcement', 'rl', 'agent', 'policy', 'reward']):
+                    research_domains.append('reinforcement_learning')
+                if any(word in text for word in ['graph', 'gnn', 'network', 'node', 'edge']):
+                    research_domains.append('graph_ml')
+                if any(word in text for word in ['time series', 'forecast', 'temporal', 'lstm', 'gru']):
+                    research_domains.append('time_series')
+                if any(word in text for word in ['bio', 'protein', 'dna', 'drug', 'molecule']):
+                    research_domains.append('bioinformatics')
+                if any(word in text for word in ['audio', 'speech', 'sound', 'wav', 'spectrogram']):
+                    research_domains.append('audio')
+                if any(word in text for word in ['federated', 'privacy', 'differential', 'secure']):
+                    research_domains.append('privacy_ml')
+            
+            print(f"Detected research domains: {set(research_domains)}")
+            ```
+            
+            Install domain-specific packages:
+            
+            ## NLP Research
+            ```bash
+            if [[ "${research_domains}" == *"nlp"* ]]; then
+                pip install transformers tokenizers sentence-transformers
+                pip install nltk spacy gensim word2vec-python
+                pip install flair allennlp pytorch-lightning
+                pip install langchain openai anthropic
+                pip install rouge-score sacrebleu bert-score
+                python -m spacy download en_core_web_sm
+                python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords')"
+            fi
+            ```
+            
+            ## Computer Vision Research
+            ```bash
+            if [[ "${research_domains}" == *"computer_vision"* ]]; then
+                pip install opencv-python opencv-contrib-python
+                pip install pillow albumentations imgaug
+                pip install detectron2 mmcv-full mmsegmentation
+                pip install timm segmentation-models-pytorch
+                pip install torchmetrics[image] pytorch-fid
+                pip install ultralytics yolov5
+            fi
+            ```
+            
+            ## Reinforcement Learning Research
+            ```bash
+            if [[ "${research_domains}" == *"reinforcement_learning"* ]]; then
+                pip install gymnasium stable-baselines3
+                pip install ray[rllib] pettingzoo
+                pip install d4rl dm-control pycolab
+                pip install tianshou cleanrl
+                pip install wandb tensorboardX
+            fi
+            ```
+            
+            ## Graph ML Research
+            ```bash
+            if [[ "${research_domains}" == *"graph_ml"* ]]; then
+                pip install torch-geometric torch-scatter torch-sparse
+                pip install dgl networkx igraph
+                pip install ogb pytorch-lightning-bolts
+                pip install stellargraph spektral
+                pip install node2vec karateclub
+            fi
+            ```
+            
+            ## Time Series Research
+            ```bash
+            if [[ "${research_domains}" == *"time_series"* ]]; then
+                pip install prophet statsforecast neuralforecast
+                pip install tsai sktime tsfresh
+                pip install pmdarima arch statsmodels
+                pip install darts pytorch-forecasting
+                pip install merlion stumpy matrixprofile
+            fi
+            ```
+            
+            ## Bioinformatics Research
+            ```bash
+            if [[ "${research_domains}" == *"bioinformatics"* ]]; then
+                pip install biopython rdkit pymol
+                pip install MDAnalysis biotite scanpy
+                pip install fair-esm transformers[protein]
+                pip install deepchem mol2vec chembl-webresource-client
+                pip install pubchempy cirpy openbabel-wheel
+            fi
+            ```
+            
+            ## Audio/Speech Research
+            ```bash
+            if [[ "${research_domains}" == *"audio"* ]]; then
+                pip install librosa soundfile audioread
+                pip install pydub wave pyaudio
+                pip install torchaudio speechbrain
+                pip install espnet asteroid-filterbanks
+                pip install praat-parselmouth webrtcvad
+            fi
+            ```
+            
+            ## Privacy-Preserving ML Research
+            ```bash
+            if [[ "${research_domains}" == *"privacy_ml"* ]]; then
+                pip install opacus tensorflow-privacy
+                pip install syft tenseal pycryptodome
+                pip install diffprivlib flower
+                pip install dp-accounting autodp
+            fi
+            ```
+            
+            ## Additional Common Research Tools
+            ```bash
+            # Statistical analysis
+            pip install pingouin scikit-posthocs statannot
+            
+            # Experiment tracking
+            pip install neptune-client comet-ml aim
+            
+            # Model deployment
+            pip install onnx onnxruntime torch2trt
+            
+            # Data validation
+            pip install great-expectations pandera pydantic
+            
+            # Distributed training
+            pip install horovod deepspeed fairscale
+            ```
             
             CRITICAL DATA ACCESS - GIT LFS DATASETS:
             ----------------------------------------
-            The data/ folder contains datasets stored with Git LFS. They are ALREADY downloaded!
+            The data/ folder contains datasets stored with Git LFS from the 'data' job.
+            These datasets are ALREADY downloaded via git lfs pull in the verification step!
+            
             ```bash
-            # Verify datasets are available
+            # Step 1: Verify datasets are properly downloaded (not just LFS pointers)
+            echo "=== Checking Git LFS Dataset Status ==="
+            git lfs ls-files  # Shows all LFS tracked files
+            git lfs status    # Shows download status
+            
+            # Step 2: List available datasets
+            echo "=== Available Datasets in data/ ==="
             ls -la data/
+            find data -type f -name "*.csv" -o -name "*.json" -o -name "*.parquet" -o -name "*.h5" -o -name "*.npy"
+            
+            # Step 3: Check dataset sizes (ensure they're actual files, not pointers)
+            echo "=== Dataset Sizes ==="
             du -sh data/*
+            file data/*/* | head -20  # Verify file types
             
-            # Read dataset documentation
-            cat data/README.md
+            # Step 4: Read dataset documentation created by data job
+            echo "=== Dataset Documentation ==="
+            if [ -f "data/README.md" ]; then
+                cat data/README.md
+            else
+                echo "WARNING: No data/README.md found - check data job output"
+            fi
             
-            # Load data in Python
+            # Step 5: Load data in Python
+            ```
+            
+            ```python
             import pandas as pd
             import numpy as np
             from pathlib import Path
+            import json
+            import h5py
             
-            data_dir = Path('../../data')  # Relative from experiments/<exp_id>/code/
-            # Example: df = pd.read_csv(data_dir / 'dataset_name/train.csv')
+            # IMPORTANT: Use absolute path to data directory
+            # The working directory is experiments/<exp_id>/code/
+            data_dir = Path('../../../data').resolve()
+            
+            print(f"Data directory: {data_dir}")
+            print(f"Data directory exists: {data_dir.exists()}")
+            
+            # List all available datasets
+            if data_dir.exists():
+                print("\nAvailable datasets:")
+                for dataset_path in data_dir.rglob('*'):
+                    if dataset_path.is_file():
+                        size_mb = dataset_path.stat().st_size / (1024*1024)
+                        print(f"  - {dataset_path.relative_to(data_dir)}: {size_mb:.2f} MB")
+            
+            # Load different data formats
+            def load_dataset(dataset_name):
+                """Load dataset from data/ folder based on extension"""
+                dataset_path = data_dir / dataset_name
+                
+                if dataset_path.suffix == '.csv':
+                    return pd.read_csv(dataset_path)
+                elif dataset_path.suffix == '.json':
+                    with open(dataset_path, 'r') as f:
+                        return json.load(f)
+                elif dataset_path.suffix == '.jsonl':
+                    with open(dataset_path, 'r') as f:
+                        return [json.loads(line) for line in f]
+                elif dataset_path.suffix == '.parquet':
+                    return pd.read_parquet(dataset_path)
+                elif dataset_path.suffix in ['.h5', '.hdf5']:
+                    return h5py.File(dataset_path, 'r')
+                elif dataset_path.suffix in ['.npy', '.npz']:
+                    return np.load(dataset_path)
+                elif dataset_path.suffix == '.pkl':
+                    return pd.read_pickle(dataset_path)
+                else:
+                    raise ValueError(f"Unknown file format: {dataset_path.suffix}")
+            
+            # Example usage:
+            # df = load_dataset('processed/dataset_name.csv')
+            # data = load_dataset('raw/dataset.json')
+            ```
+            
+            TROUBLESHOOTING LFS ISSUES:
+            ---------------------------
+            If datasets appear as small pointer files (~130 bytes):
+            ```bash
+            # Force download of LFS files
+            git lfs fetch --all
+            git lfs checkout
+            
+            # Verify files are downloaded
+            git lfs ls-files -s  # Shows size of actual files
+            
+            # If still issues, manually pull
+            git lfs pull --include="data/**"
             ```
             
             REFERENCE IMPLEMENTATIONS FROM PUBLIC REPOS:
@@ -663,44 +985,101 @@ jobs:
             
             EXPERIMENT EXECUTION REQUIREMENTS:
             ----------------------------------
-            1. SELECT experiment from proposal.jsonl
-            2. CREATE experiment structure:
+            1. SELECT experiment from proposal.jsonl based on research goals
+            
+            2. INSTALL domain-specific packages first:
                ```bash
-               exp_id="exp_$(date +%Y%m%d_%H%M%S)"
-               mkdir -p experiments/$exp_id/{code,data,results,references}
+               # Run the Python script above to detect research domain
+               python detect_research_domain.py
+               
+               # Then install the appropriate packages for your domain
+               # The packages should already be installed from Step 1
                ```
             
-            3. PLAN thoroughly in experiments/<exp_id>/plan.md:
+            3. CREATE experiment structure:
+               ```bash
+               exp_id="exp_$(date +%Y%m%d_%H%M%S)"
+               mkdir -p experiments/$exp_id/{code,data,results,references,logs,checkpoints}
+               
+               # Create README for the experiment
+               echo "# Experiment: $exp_id" > experiments/$exp_id/README.md
+               echo "Domain: [detected domain]" >> experiments/$exp_id/README.md
+               echo "Hypothesis: [from proposal]" >> experiments/$exp_id/README.md
+               ```
+            
+            4. PLAN thoroughly in experiments/<exp_id>/plan.md:
+               - Research domain and required packages
                - Hypothesis to test
                - Datasets to use (from data/ folder)
-               - Baseline methods
+               - Baseline methods to compare
                - Evaluation metrics
                - Expected outcomes
+               - Computational requirements
             
-            4. IMPLEMENT in experiments/<exp_id>/code/:
+            5. IMPLEMENT in experiments/<exp_id>/code/. For example:
                ```python
-               # main.py - Main experiment script
-               # utils.py - Helper functions
+               # main.py - Main experiment script with argparse
+               # config.py - Configuration and hyperparameters
+               # data_loader.py - Dataset loading and preprocessing
                # models.py - Model architectures
-               # evaluation.py - Metrics and evaluation
+               # train.py - Training loop
+               # evaluate.py - Metrics and evaluation
+               # utils.py - Helper functions
                # visualize.py - Results visualization
                ```
             
-            5. EXECUTE the experiment:
-               ```bash
-               cd experiments/<exp_id>/code
-               python main.py --data_path ../../data/<dataset_name> \
-                              --output_dir ../results \
-                              --seed 42
+            6. USE proper experiment structure. For example:
+               ```python
+               # main.py template
+               import argparse
+               import json
+               import logging
+               from pathlib import Path
+               
+               def setup_logging(exp_dir):
+                   logging.basicConfig(
+                       level=logging.INFO,
+                       format='%(asctime)s - %(levelname)s - %(message)s',
+                       handlers=[
+                           logging.FileHandler(exp_dir / 'experiment.log'),
+                           logging.StreamHandler()
+                       ]
+                   )
+               
+               def main():
+                   parser = argparse.ArgumentParser()
+                   parser.add_argument('--data_path', type=str, required=True)
+                   parser.add_argument('--output_dir', type=str, required=True)
+                   parser.add_argument('--seed', type=int, default=42)
+                   parser.add_argument('--device', type=str, default='cuda' if torch.cuda.is_available() else 'cpu')
+                   args = parser.parse_args()
+                   
+                   # Set seeds for reproducibility
+                   np.random.seed(args.seed)
+                   torch.manual_seed(args.seed)
+                   if torch.cuda.is_available():
+                       torch.cuda.manual_seed_all(args.seed)
                ```
             
-            6. ANALYZE results:
+            7. EXECUTE the experiment with proper logging. For example:
+               ```bash
+               cd experiments/$exp_id/code
+               
+               # Run with output capture
+               python main.py \
+                   --data_path ../../../data/<dataset_name> \
+                   --output_dir ../results \
+                   --seed 42 \
+                   2>&1 | tee ../logs/experiment_$(date +%Y%m%d_%H%M%S).log
+               ```
+            
+            8. ANALYZE results:
                - Generate plots with matplotlib/seaborn
                - Calculate statistical significance
                - Compare with baselines
                - Save all outputs to experiments/<exp_id>/results/
             
-            7. DOCUMENT in experiments/<exp_id>/results.md:
+            9. DOCUMENT in experiments/<exp_id>/results.md:
                - Methodology
                - Results (include tables and figures)
                - Analysis and interpretation
@@ -717,11 +1096,58 @@ jobs:
             - Generate visualizations
             - Run statistical tests
             
+            ERROR HANDLING AND DEBUGGING:
+            -----------------------------
+            If packages fail to install or import:
+            ```bash
+            # Check Python version
+            python --version
+            
+            # Try alternative installation methods
+            pip install --upgrade pip setuptools wheel
+            pip install --no-cache-dir [package_name]
+            
+            # For system dependencies
+            sudo apt-get install -y build-essential python3-dev
+            
+            # For GPU packages on CPU-only systems
+            pip install torch --index-url https://download.pytorch.org/whl/cpu
+            
+            # Check installed packages
+            pip list | grep [package_name]
+            ```
+            
+            If experiments fail:
+            ```python
+            # Add debugging
+            import traceback
+            import sys
+            
+            try:
+                # Your experiment code
+                pass
+            except Exception as e:
+                print(f"Error: {e}")
+                traceback.print_exc()
+                sys.exit(1)
+            ```
+            
+            Memory management:
+            ```python
+            # Monitor GPU memory
+            if torch.cuda.is_available():
+                print(f"GPU Memory: {torch.cuda.memory_allocated()/1024**3:.2f} GB")
+                torch.cuda.empty_cache()
+            
+            # Use smaller batch sizes if OOM
+            # Use gradient accumulation for effective larger batches
+            ```
+            
             COMMIT RESULTS:
             --------------
             ```bash
             git add experiments/<exp_id>/
-            git commit -m "feat: Complete experiment <exp_id> - <brief description>
+            git commit -m "run: Complete experiment <exp_id> - <brief description>
             
             Results:
             - Metric 1: X.XX
@@ -754,9 +1180,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          lfs: true  # Pull LFS files (datasets)
-          fetch-depth: 0 # fetches entire git history
+          lfs: false  # Skip LFS initially
+          fetch-depth: 1 # shallow clone
           token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Selective LFS Pull for Analysis
+        run: |
+          # Only pull result files, not large datasets
+          echo "Checking LFS for analysis files..."
+          git lfs install --skip-smudge
+          git lfs pull --include="experiments/*/results/*.json,experiments/*/results/*.csv" || echo "No LFS results to pull"
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -795,7 +1228,7 @@ jobs:
             You are a research assistant using scientific thinking and rigorous methodology.
             
             THINK DEEPLY AND THOROUGHLY about the results and their implications.
-            Use ultra-careful analysis. Check analyze.jsonl and experiments/ to see what has been done in the past.
+            Carefully analyze. Check analyze.jsonl and experiments/ to see what has been done in the past.
             
             You have FULL COMMAND EXECUTION permissions! Install any analysis packages you need:
             ```bash
@@ -820,7 +1253,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # fetches entire git history
+          fetch-depth: 1 # shallow clone
+          lfs: false # Skip LFS for paper draft
 
       - name: Write Paper Draft
         uses: anthropics/claude-code-action@beta
@@ -846,12 +1280,23 @@ jobs:
             You are a research assistant using scientific thinking and following NeurIPS paper writing guidelines.
             
             THINK DEEPLY AND THOROUGHLY about the research narrative and contributions.
-            Use ultra-careful synthesis to write a comprehensive paper draft in Latex. Look at the section_notes/ for each crucial section: research concept, literature review, experiment ideas, experiment runs, experiment analyses. 
-            Your Latex structure won't be exactly the same but be faithful to the content in these sections.
-            Use paper.jsonl for further related work papers to cite.
-            You should look at the experiments conducted too in experiments/<exp_id>/result.md to see results of conducted experiments. 
-            Make sure to include at least 5 plots and tables (in pure Latex) from the experiments conducted. 
-            CONSTANTLY double check that your Latex compiles and you are following NeurIPS paper writing guidelines.
+            Carefully synthesize to either improve an existing paper draft in Latex or write a new one. Look at the section_notes/ for each crucial section: research concept, literature review, experiment ideas, experiment runs, experiment analyses. 
+            Your Latex structure won't be exactly the same but be faithful to the content in the sections. 
+            If there are existing paper drafts in paper_drafts/, first review the latest paper draft alongside the pre-existing literature in paper.jsonl and section_notes/02-lit-review.md. and give a critical review of the experiments and paper. This review will inform your revisions. 
+            Use paper.jsonl for further related work papers to cite. Make sure to include references. 
+            You should look at the experiments conducted too in experiments/<exp_id>/result.md to see results of conducted experiments. If there are meaningful results, make sure to include plots and tables (in pure Latex) from the experiments conducted. You may also embed any images from experiments. 
+            ALL WRITING SHOULD BE FAITHFUL TO SOURCE CONTENT. Claims should be thoughtful and backed by evidence.  
+            CONSTANTLY double check that your Latex compiles and you are following the specified paper writing guidelines.
             It should be no longer than 8 pages not including references.
             Once done:
-            - Add your draft to the paper-drafts/ folder.
+            - Add your review as a '.md' to the paper-drafts/ folder. Or update the existing one if specified.
+            - Add or update your '.tex' draft to the paper-drafts/ folder.
+          mcp_config: |
+            {
+              "mcpServers": {
+                "search": {
+                  "command": "npx",
+                  "args": ["-y", "mcp-remote", "https://mcp.exa.ai/mcp?exaApiKey=${{ secrets.EXA_API_KEY }}"]
+                }
+              }
+            }
