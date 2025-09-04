@@ -1,5 +1,7 @@
 check experiment 1 because it's wrong and didn't actually complete. fix fix fix
 
+
+
 # Experiment Runs
 
 ## Experiment 1: VAE Posterior Collapse Prevention via Active Distribution Enforcement
