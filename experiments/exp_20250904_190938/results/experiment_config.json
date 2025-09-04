@@ -1,0 +1,30 @@
+{
+  "experiment_id": "exp_20250904_190938",
+  "dataset": "CIFAR-10",
+  "n_samples": 2000,
+  "latent_dim": 32,
+  "batch_size": 64,
+  "epochs": 15,
+  "learning_rate": 0.001,
+  "models": {
+    "standard_vae": {
+      "beta": 1.0
+    },
+    "beta_vae_low": {
+      "beta": 0.5
+    },
+    "beta_vae_high": {
+      "beta": 2.0
+    },
+    "derp_vae_3": {
+      "n_probes": 3,
+      "enforcement_weight": 0.5,
+      "beta": 1.0
+    },
+    "derp_vae_5": {
+      "n_probes": 5,
+      "enforcement_weight": 0.5,
+      "beta": 1.0
+    }
+  }
+}
