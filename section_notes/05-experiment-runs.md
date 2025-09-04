@@ -1,4 +1,4 @@
-For the 2nd experiment, duplicate experiments/exp\_20250904\_180037 into a new experiments/exp\_<id> fold, and run the 2nd experiment there.&#x20;
+For the 2nd experiment, duplicate experiments/exp\_20250904\_180037 into a new experiments/exp\_<id> folder, and run the 2nd experiment there. You want to make 1 ch
 
 # Experiment Runs: Distribution Enforcement via Random Probe (DERP)
 
