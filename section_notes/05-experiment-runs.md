@@ -1,3 +1,5 @@
+
+
 For another experiment, duplicate experiments/exp\_20250904\_180037 into a new experiments/exp\_<id> folder, to improve the experiment. You want to make changes to new experiment folder:&#x20;
 
 * change hidden dims in VAE implementations from 32 to 4.&#x20;
@@ -209,3 +211,4 @@ The DERP framework is ready for **real-world deployment and evaluation** across 
 ***
 
 **Next Action**: Proceed to full CIFAR-10 experiment with convolutional DERP-VAE architecture and comprehensive baseline comparisons.
+
