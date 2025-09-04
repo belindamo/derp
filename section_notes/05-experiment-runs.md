@@ -1,6 +1,7 @@
 For another experiment, duplicate experiments/exp\_20250904\_180037 into a new experiments/exp\_<id> folder, and run the 2nd experiment there. You want to make changes:&#x20;
 
-* change hidden dims in VAE implementations from 32 to 4. Make sure label is in data and there is classification loss.&#x20;
+* change hidden dims in VAE implementations from 32 to 4.&#x20;
+* Make sure label is in data and there is classification loss.&#x20;
 
 # Experiment Runs: Distribution Enforcement via Random Probe (DERP)
 
