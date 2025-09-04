@@ -1,6 +1,4 @@
-Nice. for the next experiment, duplicate experiments experiments/exp\_20250904\_192729 into a new experiments/exp\_<id> folder, to improve the experiment. Remember, we enhanced it (per the summary below), but now it is somewhat cluttered with old and new files. It is also still uses synthetic data.
-
-Please:
+Nice. for the next experiment, duplicate experiments experiments/exp\_20250904\_192729 into a new experiments/exp\_<id> folder, to improve the experiment. Remember, we enhanced it (per the summary below), but now it is somewhat cluttered. It is also sti
 
 # Enhanced DERP-VAE Implementation Complete ✅
 
