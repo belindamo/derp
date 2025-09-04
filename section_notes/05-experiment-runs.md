@@ -1,11 +1,5 @@
 Nice. for the next experiment, duplicate experiments experiments/exp\_20250904\_192729 into a new experiments/exp\_<id> folder, to improve the experiment.
 
-
-
-\* change hidden dims in VAE implementations from 32 to 4.\&#x20;
-
-
-
 # Enhanced DERP-VAE Implementation Complete ✅
 
 **Enhanced Experiment ID**: exp\_20250904\_192729 (completed with all requested modifications)
