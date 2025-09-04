@@ -2,7 +2,7 @@ Nice. for the next experiment, duplicate experiments experiments/exp\_20250904\_
 
 Please:
 
-1. remove old implementations/analyses&#x20;
+1. remove old implementations/analyses that
 2.
 
 # Enhanced DERP-VAE Implementation Complete ✅
