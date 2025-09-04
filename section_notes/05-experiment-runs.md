@@ -1,3 +1,5 @@
+check experiment 1's&#x20;
+
 # Experiment Runs
 
 ## Experiment 1: VAE Posterior Collapse Prevention via Active Distribution Enforcement
