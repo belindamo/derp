@@ -1,0 +1,183 @@
+{
+  "Standard_VAE": {
+    "config": {
+      "beta": 1.0,
+      "n_probes": null,
+      "latent_dim": 4
+    },
+    "training_time": 54.43,
+    "final_metrics": {
+      "kl_divergence": 0.0002,
+      "classification_accuracy": 0.188,
+      "psnr": 12.29,
+      "activation_rate": 0.25,
+      "avg_posterior_variance": 0.001,
+      "mse": 0.059
+    },
+    "statistical_tests": {
+      "shapiro_wilk_mean_pval": 0.8,
+      "ks_test_mean_pval": 0.7,
+      "normality_compliance": 0.75,
+      "class_separation_ratio": 0.012
+    }
+  },
+  "Beta_VAE_0.5": {
+    "config": {
+      "beta": 0.5,
+      "n_probes": null,
+      "latent_dim": 4
+    },
+    "training_time": 54.46,
+    "final_metrics": {
+      "kl_divergence": 0.0004,
+      "classification_accuracy": 0.188,
+      "psnr": 12.27,
+      "activation_rate": 0.25,
+      "avg_posterior_variance": 0.002,
+      "mse": 0.059
+    },
+    "statistical_tests": {
+      "shapiro_wilk_mean_pval": 0.75,
+      "ks_test_mean_pval": 0.65,
+      "normality_compliance": 0.75,
+      "class_separation_ratio": 0.008
+    }
+  },
+  "Beta_VAE_2.0": {
+    "config": {
+      "beta": 2.0,
+      "n_probes": null,
+      "latent_dim": 4
+    },
+    "training_time": 54.39,
+    "final_metrics": {
+      "kl_divergence": 0.0002,
+      "classification_accuracy": 0.214,
+      "psnr": 12.3,
+      "activation_rate": 0.25,
+      "avg_posterior_variance": 0.001,
+      "mse": 0.058
+    },
+    "statistical_tests": {
+      "shapiro_wilk_mean_pval": 0.8,
+      "ks_test_mean_pval": 0.7,
+      "normality_compliance": 0.75,
+      "class_separation_ratio": 0.008
+    }
+  },
+  "DERP_VAE_3": {
+    "config": {
+      "beta": 1.0,
+      "n_probes": 3,
+      "latent_dim": 4
+    },
+    "training_time": 54.58,
+    "final_metrics": {
+      "kl_divergence": 0.0054,
+      "classification_accuracy": 0.208,
+      "psnr": 12.3,
+      "activation_rate": 0.25,
+      "avg_posterior_variance": 0.005,
+      "mse": 0.058
+    },
+    "statistical_tests": {
+      "shapiro_wilk_mean_pval": 0.6,
+      "ks_test_mean_pval": 0.55,
+      "normality_compliance": 0.5,
+      "class_separation_ratio": 0.004
+    }
+  },
+  "DERP_VAE_5": {
+    "config": {
+      "beta": 1.0,
+      "n_probes": 5,
+      "latent_dim": 4
+    },
+    "training_time": 55.06,
+    "final_metrics": {
+      "kl_divergence": 0.0022,
+      "classification_accuracy": 0.179,
+      "psnr": 12.3,
+      "activation_rate": 0.25,
+      "avg_posterior_variance": 0.003,
+      "mse": 0.058
+    },
+    "statistical_tests": {
+      "shapiro_wilk_mean_pval": 0.65,
+      "ks_test_mean_pval": 0.6,
+      "normality_compliance": 0.5,
+      "class_separation_ratio": 0.005
+    }
+  },
+  "hypothesis_testing": {
+    "H1_posterior_collapse_prevention": {
+      "Beta_VAE_0.5": {
+        "kl_divergence": 0.0004,
+        "kl_improvement_percent": -85.6,
+        "supported": false,
+        "threshold": 10.0
+      },
+      "Beta_VAE_2.0": {
+        "kl_divergence": 0.0002,
+        "kl_improvement_percent": -1.9,
+        "supported": false,
+        "threshold": 10.0
+      },
+      "DERP_VAE_3": {
+        "kl_divergence": 0.0054,
+        "kl_improvement_percent": -2305.3,
+        "supported": false,
+        "threshold": 10.0
+      },
+      "DERP_VAE_5": {
+        "kl_divergence": 0.0022,
+        "kl_improvement_percent": -897.0,
+        "supported": false,
+        "threshold": 10.0
+      }
+    },
+    "H2_performance_maintenance": {
+      "Beta_VAE_0.5": {
+        "classification_accuracy": 0.188,
+        "accuracy_change_percent": 0.0,
+        "supported": true,
+        "threshold": 5.0
+      },
+      "Beta_VAE_2.0": {
+        "classification_accuracy": 0.214,
+        "accuracy_change_percent": 2.7,
+        "supported": true,
+        "threshold": 5.0
+      },
+      "DERP_VAE_3": {
+        "classification_accuracy": 0.208,
+        "accuracy_change_percent": 2.0,
+        "supported": true,
+        "threshold": 5.0
+      },
+      "DERP_VAE_5": {
+        "classification_accuracy": 0.179,
+        "accuracy_change_percent": -0.9,
+        "supported": true,
+        "threshold": 5.0
+      }
+    },
+    "H3_real_data_validation": {
+      "DERP_VAE_3": {
+        "kl_better": false,
+        "accuracy_maintained": true,
+        "separation_good": false,
+        "success_indicators": 1,
+        "supported": false
+      },
+      "DERP_VAE_5": {
+        "kl_better": false,
+        "accuracy_maintained": true,
+        "separation_good": false,
+        "success_indicators": 1,
+        "supported": false
+      },
+      "overall_supported": false
+    }
+  }
+}
