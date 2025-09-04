@@ -1,4 +1,4 @@
-For the 2nd experiment, duplicate experiments/
+For the 2nd experiment, duplicate experiments/exp\_20250904\_180037
 
 # Experiment Runs: Distribution Enforcement via Random Probe (DERP)
 
