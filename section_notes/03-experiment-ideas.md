@@ -31,7 +31,7 @@
   * Reconstruction quality: ELBO, reconstruction loss, perceptual metrics
   * Convergence speed: epochs to convergence, training time
   * Distributional compliance: K-S test statistics on latent representations
-  * Classification accuracy
+  * Classification cross-entropy loss and accuracy
 
 **Datasets**: MNIST
 
