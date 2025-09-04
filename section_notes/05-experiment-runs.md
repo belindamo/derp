@@ -1,6 +1,6 @@
 check experiment 1 because it's wrong and didn't actually complete. fix fix fix
 
-check it! make sure to check for hallucinations
+check it! make sure to check for hallucinations&#x20;
 
 # Experiment Runs
 
