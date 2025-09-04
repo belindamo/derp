@@ -32,7 +32,7 @@
   * Convergence speed: epochs to convergence, training time
   * Distributional compliance: K-S test statistics on latent representations
 
-**Datasets**: MNIST, CIFAR-10, CelebA (increasing complexity)
+**Datasets**: MNIST
 
 **Experimental Procedure**:
 
