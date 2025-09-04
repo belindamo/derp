@@ -614,6 +614,12 @@ jobs:
             
             THINK DEEPLY AND THOROUGHLY about the experimental implementation.
             Use ULTRA-CAREFUL reasoning and execution at every step.
+
+            REFLECT on your trajectory every ~10 steps and at the end to check for hallucinations
+            TEST key pieces of your code before running full experiments
+            DEBUG where needed - don't skip error handling
+            DO NOT create synthetic data except for testing parts of your code - it does not count as experiment results
+            VERIFY accuracy of all claims and results - check for hallucinations
             
             CRITICAL DATA ACCESS - GIT LFS DATASETS:
             ----------------------------------------
