@@ -1,3 +1,5 @@
+For the 2nd experiment, duplicate experiments/
+
 # Experiment Runs: Distribution Enforcement via Random Probe (DERP)
 
 ## Experiment Overview
