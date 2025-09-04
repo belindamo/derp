@@ -1,4 +1,4 @@
-For another experiment, duplicate experiments/exp\_20250904\_180037 into a new experiments/exp\_<id> folder, and run the 2nd experiment there. You want to make 1 change: change hidden dims in VAE implementations from 32 to 4.  instead of using synthetic data, use 2000 lines from the CIFAR dataset! So that we are using real data and can validate more quickly that it works, with a subset of CIFAR
+For another experiment, duplicate experiments/exp\_20250904\_180037 into a new experiments/exp\_<id> folder, and run the 2nd experiment there. You want to make 1 change: change hidden dims in VAE implementations from 32 to 4.&#x20;
 
 # Experiment Runs: Distribution Enforcement via Random Probe (DERP)
 
