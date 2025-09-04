@@ -1,3 +1,5 @@
+
+
 For the 2nd experiment, duplicate experiments/exp\_20250904\_180037 into a new experiments/exp\_<id> folder, and run the 2nd experiment there. You want to make 1 change: instead of using synthetic data, use 2000 lines from the CIFAR dataset! So that we are using real data and can validate more quichat it works with a subset of CIFAR
 
 # Experiment Runs: Distribution Enforcement via Random Probe (DERP)
@@ -205,3 +207,4 @@ The DERP framework is ready for **real-world deployment and evaluation** across 
 ***
 
 **Next Action**: Proceed to full CIFAR-10 experiment with convolutional DERP-VAE architecture and comprehensive baseline comparisons.
+
