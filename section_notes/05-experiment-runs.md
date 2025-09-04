@@ -3,7 +3,7 @@ Nice. for the next experiment, duplicate experiments experiments/exp\_20250904\_
 Please:
 
 1. remove old implementations/analyses that are not enhanced
-2. modify impelmentation to use
+2. modify impelmentation to use a s
 
 # Enhanced DERP-VAE Implementation Complete ✅
 
