@@ -51,3 +51,7 @@
 * **Selection bias**: Use standard benchmarks with fixed train/test splits
 * **Implementation effects**: Identical architecture except for DERP components
 * **Hyperparameter sensitivity**: Grid search with cross-validation
+
+\---
+
+future experiments: CIFAR-10, CelebA
