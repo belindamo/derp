@@ -55,4 +55,4 @@
 
 \---
 
-future experiments: CIFAR-10, CelebA
+future experiments: MNIST, CelebA
