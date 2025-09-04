@@ -3,9 +3,7 @@ Nice. for the next experiment, duplicate experiments experiments/exp\_20250904\_
 Please:
 
 1. remove old implementations/analyses that are not enhanced
-2. modify impelmentation to use a subset of CIFAR.&#x20;
-
-instead of using synthetic data, use 2000 lines from the CIFAR dataset! So that we are using real data and can validate more quichat it works with a subset of CIFAR
+2. instead of using synthetic data, use 2000 lines from the CIFAR dataset! So that we are using real data and can validate more quichat it works with a subset of CIFAR
 
 
 1.
