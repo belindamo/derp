@@ -1,4 +1,4 @@
-For another experiment, duplicate experiments/exp\_20250904\_180037 into a new experiments/exp\_<id> folder, and run the 2nd experiment there. You want to make 1 change:
+For another experiment, duplicate experiments/exp\_20250904\_180037 into a new experiments/exp\_<id> folder, and run the 2nd experiment there. You want to make 1 change: change&#x20;
 
 # Experiment Runs: Distribution Enforcement via Random Probe (DERP)
 
