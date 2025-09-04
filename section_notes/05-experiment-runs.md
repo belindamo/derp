@@ -1,4 +1,4 @@
-Nice. for the next experiment, duplicate experiments experiments/exp\_20250904\_192729 into a new experiments/exp\\\_<id> folder, to improve the experiment. You want to make changes to new experiment folder:\&#x20;
+Nice. for the next experiment, duplicate experiments experiments/exp\_20250904\_192729 into a new experiments/exp\\\_<id> folder, to improve the experiment
 
 
 
