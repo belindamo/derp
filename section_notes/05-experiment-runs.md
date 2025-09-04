@@ -2,7 +2,7 @@ Nice. for the next experiment, duplicate experiments experiments/exp\_20250904\_
 
 Please:
 
-1. remove outdated  implementations/analyses&#x20;
+1. remove outdated files
 2. instead of using synthetic data, use 2000 lines from the CIFAR dataset! So that we are using real data and can validate more quickly it works with a subset of CIFAR
 
 # Enhanced DERP-VAE Implementation Complete ✅
