@@ -1,0 +1,43 @@
+{
+  "method": "Controlled validation experiment",
+  "raw_results": {
+    "passive": [
+      {
+        "kl": 0.10000000000000002,
+        "active_units": 0.550000011920929,
+        "avg_ks_statistic": 0.4035961958396605
+      },
+      {
+        "kl": 0.10000000000000002,
+        "active_units": 0.550000011920929,
+        "avg_ks_statistic": 0.4036328981806636
+      },
+      {
+        "kl": 0.10000000000000002,
+        "active_units": 0.3499999940395355,
+        "avg_ks_statistic": 0.40385525670857686
+      }
+    ],
+    "active": [
+      {
+        "kl": 0.8628710262841943,
+        "active_units": 1.0,
+        "avg_ks_statistic": 0.06642433787567777
+      },
+      {
+        "kl": 0.8628710262841943,
+        "active_units": 1.0,
+        "avg_ks_statistic": 0.06772296560788127
+      },
+      {
+        "kl": 0.8628710262841943,
+        "active_units": 1.0,
+        "avg_ks_statistic": 0.06590561486052253
+      }
+    ]
+  },
+  "statistical_analysis": {
+    "kl_reduction_percent": -762.871026284194,
+    "au_improvement_percent": 106.89654917269064,
+    "kl_pvalue": 0.04685417760387376,
+    "criteria_passed": 
