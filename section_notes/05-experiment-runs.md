@@ -1,4 +1,4 @@
-For the 2nd experiment, duplicate experiments/exp\_20250904\_180037 into a new experiments/exp\_<, and run the 2nd experiment there.&#x20;
+For the 2nd experiment, duplicate experiments/exp\_20250904\_180037 into a new experiments/exp\_<id> , and run the 2nd experiment there.&#x20;
 
 # Experiment Runs: Distribution Enforcement via Random Probe (DERP)
 
