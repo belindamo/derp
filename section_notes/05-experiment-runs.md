@@ -1,4 +1,4 @@
-check experiment 1's&#x20;
+check experiment 1 because it's wrong and didn't actually complete.&#x20;
 
 # Experiment Runs
 
