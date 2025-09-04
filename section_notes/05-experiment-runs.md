@@ -1,4 +1,4 @@
-For another experiment, duplicate experiments/exp\_20250904\_180037 into a new experiments/exp\_<id> folder, and run the 2nd experiment there. You want to make 1 change: change hidden dims i
+For another experiment, duplicate experiments/exp\_20250904\_180037 into a new experiments/exp\_<id> folder, and run the 2nd experiment there. You want to make 1 change: change hidden dims from 32 to 4.&#x20;
 
 # Experiment Runs: Distribution Enforcement via Random Probe (DERP)
 
