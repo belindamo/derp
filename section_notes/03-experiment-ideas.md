@@ -9,7 +9,7 @@
 * Multiple hyperparameter tuning runs expected
 * VAE paper and package provided as reference implementation
 
-## Core Experiments
+## Core Experiment
 
 ### Experiment 1: VAE Posterior Collapse Prevention via Active Distribution Enforcement
 
