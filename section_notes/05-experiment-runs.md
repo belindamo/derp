@@ -2,9 +2,8 @@ Nice. for the next experiment, duplicate experiments experiments/exp\_20250904\_
 
 Please:
 
-1. remove old implementations/analyses that are not enhanced
+1. remove old implementations/analyses that are not enhance
 2.
-3.
 
 # Enhanced DERP-VAE Implementation Complete ✅
 
