@@ -1,0 +1,292 @@
+{
+  "Standard_VAE": {
+    "model_name": "Standard_VAE",
+    "beta": 1.0,
+    "training_time": 1.190647840499878,
+    "final_metrics": {
+      "epoch": 15,
+      "test_loss": 177.35975428989954,
+      "kl_divergence": 0.012231678701937199,
+      "mutual_information": -0.012231678701937199,
+      "activation_rate": 1.0,
+      "avg_posterior_variance": 0.9921191930770874,
+      "shapiro_wilk_mean_pval": 0.6383382036442942,
+      "ks_test_mean_pval": 0.6105985152625606,
+      "normality_compliance": 1.0
+    },
+    "train_losses": [
+      177.16318908691406,
+      177.1692028808594,
+      177.14776184082032,
+      177.15523376464844,
+      177.15878540039063
+    ],
+    "test_metrics": [
+      {
+        "epoch": 5,
+        "test_loss": 177.40628923688615,
+        "kl_divergence": 0.004100146237760782,
+        "mutual_information": -0.004100146237760782,
+        "activation_rate": 1.0,
+        "avg_posterior_variance": 0.9952702522277832,
+        "shapiro_wilk_mean_pval": 0.36568125529083073,
+        "ks_test_mean_pval": 0.5134439743371627,
+        "normality_compliance": 1.0
+      },
+      {
+        "epoch": 10,
+        "test_loss": 177.3527614048549,
+        "kl_divergence": 0.008230932988226414,
+        "mutual_information": -0.008230932988226414,
+        "activation_rate": 1.0,
+        "avg_posterior_variance": 0.9958143830299377,
+        "shapiro_wilk_mean_pval": 0.5114892084492485,
+        "ks_test_mean_pval": 0.5743138086228692,
+        "normality_compliance": 0.9
+      },
+      {
+        "epoch": 15,
+        "test_loss": 177.35975428989954,
+        "kl_divergence": 0.012231678701937199,
+        "mutual_information": -0.012231678701937199,
+        "activation_rate": 1.0,
+        "avg_posterior_variance": 0.9921191930770874,
+        "shapiro_wilk_mean_pval": 0.6383382036442942,
+        "ks_test_mean_pval": 0.6105985152625606,
+        "normality_compliance": 1.0
+      }
+    ]
+  },
+  "Beta_VAE_0.5": {
+    "model_name": "Beta_VAE_0.5",
+    "beta": 0.5,
+    "training_time": 1.1007862091064453,
+    "final_metrics": {
+      "epoch": 15,
+      "test_loss": 177.3123822893415,
+      "kl_divergence": 0.364577054977417,
+      "mutual_information": -0.364577054977417,
+      "activation_rate": 1.0,
+      "avg_posterior_variance": 0.9742786884307861,
+      "shapiro_wilk_mean_pval": 0.4087734193166705,
+      "ks_test_mean_pval": 0.4827613364066085,
+      "normality_compliance": 1.0
+    },
+    "train_losses": [
+      177.14727355957032,
+      177.1310772705078,
+      177.10521362304686,
+      177.10453186035156,
+      177.0328106689453
+    ],
+    "test_metrics": [
+      {
+        "epoch": 5,
+        "test_loss": 177.41341073172433,
+        "kl_divergence": 0.03804615139961243,
+        "mutual_information": -0.03804615139961243,
+        "activation_rate": 1.0,
+        "avg_posterior_variance": 0.9944068193435669,
+        "shapiro_wilk_mean_pval": 0.5641158313971706,
+        "ks_test_mean_pval": 0.5433573274352602,
+        "normality_compliance": 0.9
+      },
+      {
+        "epoch": 10,
+        "test_loss": 177.33318437848772,
+        "kl_divergence": 0.11779601126909256,
+        "mutual_information": -0.11779601126909256,
+        "activation_rate": 1.0,
+        "avg_posterior_variance": 0.9850502610206604,
+        "shapiro_wilk_mean_pval": 0.5094415105234418,
+        "ks_test_mean_pval": 0.418220460698323,
+        "normality_compliance": 1.0
+      },
+      {
+        "epoch": 15,
+        "test_loss": 177.3123822893415,
+        "kl_divergence": 0.364577054977417,
+        "mutual_information": -0.364577054977417,
+        "activation_rate": 1.0,
+        "avg_posterior_variance": 0.9742786884307861,
+        "shapiro_wilk_mean_pval": 0.4087734193166705,
+        "ks_test_mean_pval": 0.4827613364066085,
+        "normality_compliance": 1.0
+      }
+    ]
+  },
+  "Beta_VAE_2.0": {
+    "model_name": "Beta_VAE_2.0",
+    "beta": 2.0,
+    "training_time": 1.1751337051391602,
+    "final_metrics": {
+      "epoch": 15,
+      "test_loss": 177.3590545654297,
+      "kl_divergence": 0.0008421349339187145,
+      "mutual_information": -0.0008421349339187145,
+      "activation_rate": 1.0,
+      "avg_posterior_variance": 0.996945858001709,
+      "shapiro_wilk_mean_pval": 0.4277113419031509,
+      "ks_test_mean_pval": 0.3717872716393589,
+      "normality_compliance": 0.8
+    },
+    "train_losses": [
+      177.16751831054688,
+      177.17667053222655,
+      177.16203125,
+      177.15962158203126,
+      177.16129333496093
+    ],
+    "test_metrics": [
+      {
+        "epoch": 5,
+        "test_loss": 177.33441380092077,
+        "kl_divergence": 0.001095669693313539,
+        "mutual_information": -0.001095669693313539,
+        "activation_rate": 1.0,
+        "avg_posterior_variance": 0.9981464147567749,
+        "shapiro_wilk_mean_pval": 0.4588065345997408,
+        "ks_test_mean_pval": 0.4704567739858784,
+        "normality_compliance": 0.9
+      },
+      {
+        "epoch": 10,
+        "test_loss": 177.35658264160156,
+        "kl_divergence": 0.0007563412073068321,
+        "mutual_information": -0.0007563412073068321,
+        "activation_rate": 1.0,
+        "avg_posterior_variance": 0.997902512550354,
+        "shapiro_wilk_mean_pval": 0.6004677677734117,
+        "ks_test_mean_pval": 0.5843071272914295,
+        "normality_compliance": 0.9
+      },
+      {
+        "epoch": 15,
+        "test_loss": 177.3590545654297,
+        "kl_divergence": 0.0008421349339187145,
+        "mutual_information": -0.0008421349339187145,
+        "activation_rate": 1.0,
+        "avg_posterior_variance": 0.996945858001709,
+        "shapiro_wilk_mean_pval": 0.4277113419031509,
+        "ks_test_mean_pval": 0.3717872716393589,
+        "normality_compliance": 0.8
+      }
+    ]
+  },
+  "DERP_VAE_3probes": {
+    "model_name": "DERP_VAE_3probes",
+    "beta": 1.0,
+    "training_time": 1.3258299827575684,
+    "final_metrics": {
+      "epoch": 15,
+      "test_loss": 177.3818119594029,
+      "kl_divergence": 0.00498063862323761,
+      "mutual_information": -0.00498063862323761,
+      "activation_rate": 1.0,
+      "avg_posterior_variance": 0.9932597279548645,
+      "shapiro_wilk_mean_pval": 0.5242226016685979,
+      "ks_test_mean_pval": 0.6459249851510092,
+      "normality_compliance": 1.0
+    },
+    "train_losses": [
+      177.20127136230468,
+      177.21353088378908,
+      177.2010662841797,
+      177.20022399902345,
+      177.19717895507813
+    ],
+    "test_metrics": [
+      {
+        "epoch": 5,
+        "test_loss": 177.42893763950892,
+        "kl_divergence": 0.0025741427671164274,
+        "mutual_information": -0.0025741427671164274,
+        "activation_rate": 1.0,
+        "avg_posterior_variance": 0.9970441460609436,
+        "shapiro_wilk_mean_pval": 0.5751505688349736,
+        "ks_test_mean_pval": 0.43240925461157226,
+        "normality_compliance": 0.8
+      },
+      {
+        "epoch": 10,
+        "test_loss": 177.42236982073103,
+        "kl_divergence": 0.003845304250717163,
+        "mutual_information": -0.003845304250717163,
+        "activation_rate": 1.0,
+        "avg_posterior_variance": 1.0006550550460815,
+        "shapiro_wilk_mean_pval": 0.5539159945195096,
+        "ks_test_mean_pval": 0.2503992698605809,
+        "normality_compliance": 0.8
+      },
+      {
+        "epoch": 15,
+        "test_loss": 177.3818119594029,
+        "kl_divergence": 0.00498063862323761,
+        "mutual_information": -0.00498063862323761,
+        "activation_rate": 1.0,
+        "avg_posterior_variance": 0.9932597279548645,
+        "shapiro_wilk_mean_pval": 0.5242226016685979,
+        "ks_test_mean_pval": 0.6459249851510092,
+        "normality_compliance": 1.0
+      }
+    ]
+  },
+  "DERP_VAE_5probes": {
+    "model_name": "DERP_VAE_5probes",
+    "beta": 1.0,
+    "training_time": 1.4789676666259766,
+    "final_metrics": {
+      "epoch": 15,
+      "test_loss": 177.38680376325334,
+      "kl_divergence": 0.006029626354575157,
+      "mutual_information": -0.006029626354575157,
+      "activation_rate": 1.0,
+      "avg_posterior_variance": 0.9991252422332764,
+      "shapiro_wilk_mean_pval": 0.49873517331398876,
+      "ks_test_mean_pval": 0.6958184158069516,
+      "normality_compliance": 0.9
+    },
+    "train_losses": [
+      177.20288635253905,
+      177.20723449707032,
+      177.20205444335937,
+      177.1969091796875,
+      177.18900451660156
+    ],
+    "test_metrics": [
+      {
+        "epoch": 5,
+        "test_loss": 177.45104326520647,
+        "kl_divergence": 0.003250940702855587,
+        "mutual_information": -0.003250940702855587,
+        "activation_rate": 1.0,
+        "avg_posterior_variance": 0.9947820901870728,
+        "shapiro_wilk_mean_pval": 0.5339220776033624,
+        "ks_test_mean_pval": 0.4692461536918045,
+        "normality_compliance": 1.0
+      },
+      {
+        "epoch": 10,
+        "test_loss": 177.38533891950334,
+        "kl_divergence": 0.005932818632572889,
+        "mutual_information": -0.005932818632572889,
+        "activation_rate": 1.0,
+        "avg_posterior_variance": 0.9930174350738525,
+        "shapiro_wilk_mean_pval": 0.6106696672681045,
+        "ks_test_mean_pval": 0.648915870456775,
+        "normality_compliance": 1.0
+      },
+      {
+        "epoch": 15,
+        "test_loss": 177.38680376325334,
+        "kl_divergence": 0.006029626354575157,
+        "mutual_information": -0.006029626354575157,
+        "activation_rate": 1.0,
+        "avg_posterior_variance": 0.9991252422332764,
+        "shapiro_wilk_mean_pval": 0.49873517331398876,
+        "ks_test_mean_pval": 0.6958184158069516,
+        "normality_compliance": 0.9
+      }
+    ]
+  }
+}
