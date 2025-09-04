@@ -2,7 +2,7 @@ For another experiment, duplicate experiments/exp\_20250904\_180037 into a new e
 
 * change hidden dims in VAE implementations from 32 to 4.&#x20;
 * Make sure label is in data
-* Make sure there is classification loss, reconstruction loss,&#x20;
+* Make sure there is classification loss, res
 
 # Experiment Runs: Distribution Enforcement via Random Probe (DERP)
 
