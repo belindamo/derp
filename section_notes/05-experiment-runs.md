@@ -1,4 +1,4 @@
-For the 2nd experiment, duplicate experiments/exp\_20250904\_180037 into a new experiments/exp\_<id> folder, and run the 2nd experiment there. You want to make 1 change: instead of using synthetic data, use 2000 lines from the CIFAR dataset! So that we are using real data and can
+For the 2nd experiment, duplicate experiments/exp\_20250904\_180037 into a new experiments/exp\_<id> folder, and run the 2nd experiment there. You want to make 1 change: instead of using synthetic data, use 2000 lines from the CIFAR dataset! So that we are using real data and can validate tmore quickhat it works with a subset of CIFAR
 
 # Experiment Runs: Distribution Enforcement via Random Probe (DERP)
 
