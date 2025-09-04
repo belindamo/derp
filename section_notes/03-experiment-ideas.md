@@ -33,7 +33,7 @@
   * Distributional compliance: K-S test statistics on latent representations
   * Classification cross-entropy loss and accuracy
 
-**Datasets**: MNIST
+**Datasets**: CIFAR
 
 **Experimental Procedure**:
 
