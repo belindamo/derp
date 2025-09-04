@@ -1,1 +1,1 @@
-analyze experimentsexp\_20250904\_300000
+analyze experiments/exp\_20250904\_300000
