@@ -1,10 +1,9 @@
-Nice. for the next experiment, duplicate experiments experiments/exp\_20250904\_192729 into a new experiments/exp\_<id> folder, to improve the experiment. Remember, we enhanced it (per the summary below), but now it is somewhat cluttered with old and new files. It is also still uses synthetic data. 
+Nice. for the next experiment, duplicate experiments experiments/exp\_20250904\_192729 into a new experiments/exp\_<id> folder, to improve the experiment. Remember, we enhanced it (per the summary below), but now it is somewhat cluttered with old and new files. It is also still uses synthetic data.
 
 Please:
 
-1. remove old implementations/analyses that are not enhanced
+1. remove outdated  implementations/analyses&#x20;
 2. instead of using synthetic data, use 2000 lines from the CIFAR dataset! So that we are using real data and can validate more quickly it works with a subset of CIFAR
-
 
 # Enhanced DERP-VAE Implementation Complete ✅
 
