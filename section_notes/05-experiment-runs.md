@@ -1,3 +1,5 @@
+
+
 check experiment 1 because it's wrong and didn't actually complete. fix fix fix
 
 check it! make sure to check for hallucinations&#x20;
@@ -48,3 +50,4 @@ Available experiments from proposal.jsonl:
 * exp3: Computational Efficiency of Random Probe Testing
 * abl1: Modified K-S Distance vs Classical Distance
 * abl2: Probe Projection Strategies Comparison
+
