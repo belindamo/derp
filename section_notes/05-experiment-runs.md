@@ -6,8 +6,6 @@ Please:
 2. instead of using synthetic data, use 2000 lines from the CIFAR dataset! So that we are using real data and can validate more quickly it works with a subset of CIFAR
 
 
-1.
-
 # Enhanced DERP-VAE Implementation Complete ✅
 
 **Enhanced Experiment ID**: exp\_20250904\_192729 (completed with all requested modifications)
