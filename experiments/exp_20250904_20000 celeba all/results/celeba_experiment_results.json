@@ -1,0 +1,94 @@
+{
+  "Standard_VAE": {
+    "model_name": "Standard_VAE",
+    "beta": 1.0,
+    "config": {
+      "input_dim": 12288,
+      "hidden_dim": 512,
+      "latent_dim": 64,
+      "n_classes": 2
+    },
+    "final_metrics": {
+      "epoch": 10,
+      "test_loss": 6833.840980514796,
+      "test_ks": 0.0,
+      "kl_divergence": 35.26484680175781,
+      "mutual_information": -35.26484680175781,
+      "activation_rate": 0.994384765625,
+      "avg_posterior_variance": 0.6654274463653564,
+      "classification_accuracy": 0.6050000190734863
+    },
+    "training_time": 2403.86053609848,
+    "train_losses": [
+      6704.993450383233,
+      6682.0725433057105,
+      6664.937030318798,
+      6652.778212912225,
+      6643.522134176664
+    ]
+  },
+  "Beta_VAE_0.1": {
+    "model_name": "Beta_VAE_0.1",
+    "beta": 0.1,
+    "config": {
+      "input_dim": 12288,
+      "hidden_dim": 512,
+      "latent_dim": 64,
+      "n_classes": 2
+    },
+    "final_metrics": {
+      "epoch": 10,
+      "test_loss": 6747.47618981382,
+      "test_ks": 0.0,
+      "kl_divergence": 134.04815673828125,
+      "mutual_information": -134.04815673828125,
+      "activation_rate": 0.8623046875,
+      "avg_posterior_variance": 0.01769663393497467,
+      "classification_accuracy": 0.7143750190734863
+    },
+    "training_time": 3475.6285288333893,
+    "train_losses": [
+      6606.732209954457,
+      6589.552430174222,
+      6574.802622534714,
+      6561.737467647918,
+      6550.665210062938
+    ]
+  },
+  "DERP_VAE_5probes": {
+    "model_name": "DERP_VAE_5probes",
+    "beta": 1.0,
+    "config": {
+      "input_dim": 12288,
+      "hidden_dim": 512,
+      "latent_dim": 64,
+      "n_classes": 2
+    },
+    "final_metrics": {
+      "epoch": 10,
+      "test_loss": 6838.849301920893,
+      "test_ks": 0.06899125452111302,
+      "kl_divergence": 35.87099075317383,
+      "mutual_information": -35.87099075317383,
+      "activation_rate": 0.99232421875,
+      "avg_posterior_variance": 0.6592190265655518,
+      "classification_accuracy": 0.6262500286102295
+    },
+    "training_time": 3186.6269900798798,
+    "train_losses": [
+      6704.1991417098025,
+      6680.112534728089,
+      6662.8460684059355,
+      6650.75287100735,
+      6639.994540106023
+    ]
+  },
+  "experiment_config": {
+    "dataset": "CelebA",
+    "image_size": 64,
+    "batch_size": 32,
+    "num_samples": null,
+    "epochs": 10,
+    "device": "cpu"
+  }
+}
