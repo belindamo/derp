@@ -1,11 +1,11 @@
 """
-Enhanced DERP-VAE Experiment with Multi-Loss Framework
+Enhanced DERP-VAE Experiment with Multi-Loss Framework on CIFAR-10
 Testing H1 & H2 with reduced latent dimensions and comprehensive evaluation
 
 Key Features:
 - Hidden dims reduced from 32 to 4 for challenging posterior collapse conditions
 - Multi-loss framework: Classification + Reconstruction + Perceptual + Modified KS
-- Ground-truth labels from synthetic Gaussian mixture dataset
+- CIFAR-10 dataset with 10 classes
 - Statistical hypothesis testing with proper controls
 - Enhanced metrics including classification accuracy and class separation
 """
@@ -28,13 +28,13 @@ from typing import Dict, Any
 sys.path.append('.')
 
 # Import our enhanced modules
-from enhanced_derp_vae import (
-    EnhancedDERP_VAE, EnhancedStandardVAE, 
+from derp_vae import (
+    DERP_VAE, EnhancedStandardVAE as StandardVAE, 
     compute_enhanced_metrics, enhanced_statistical_test
 )
-from enhanced_data_loader import (
-    get_enhanced_dataloaders, analyze_dataset_properties, 
-    verify_data_quality, create_controlled_experiment_data
+from data_loader import (
+    get_cifar10_dataloaders, analyze_dataset_properties, 
+    verify_data_quality
 )
 
 # Set up logging
@@ -48,50 +48,24 @@ def set_seeds(seed: int = 42):
     np.random.seed(seed)
 
 
-def create_enhanced_dataset(n_samples: int = 2000, input_dim: int = 256):
-    """Create enhanced dataset with controlled properties"""
-    logger.info(f"Creating controlled synthetic dataset: {n_samples} samples, {input_dim} dims")
+def get_cifar_dataset(batch_size: int = 64):
+    """Get CIFAR-10 dataset loaders"""
+    logger.info("Loading CIFAR-10 dataset")
     
-    # Use controlled generation for reproducible results
-    data, labels = create_controlled_experiment_data(
-        n_samples=n_samples, 
-        n_dims=input_dim, 
-        latent_dim=4,  # True underlying latent dimensionality
-        n_components=5
+    # Get CIFAR-10 dataloaders
+    train_loader, test_loader = get_cifar10_dataloaders(
+        batch_size=batch_size,
+        normalize=False,  # Don't normalize for BCE loss compatibility
+        download=True,
+        data_dir='../../../data/vision'  # Path to data/vision directory
     )
-    
-    # Verify data quality
-    quality_checks = verify_data_quality(data, labels)
-    logger.info(f"Data quality checks: {quality_checks}")
-    
-    if not all(quality_checks.values()):
-        failed_checks = [k for k, v in quality_checks.items() if not v]
-        logger.warning(f"Failed quality checks: {failed_checks}")
-    
-    # Create train/test split
-    train_size = int(0.8 * len(data))
-    indices = torch.randperm(len(data))
-    
-    train_data = data[indices[:train_size]]
-    train_labels = labels[indices[:train_size]]
-    test_data = data[indices[train_size:]]
-    test_labels = labels[indices[train_size:]]
-    
-    # Create data loaders
-    from torch.utils.data import TensorDataset, DataLoader
-    
-    train_dataset = TensorDataset(train_data, train_labels)
-    test_dataset = TensorDataset(test_data, test_labels)
-    
-    train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True, drop_last=True)
-    test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False, drop_last=False)
     
     logger.info(f"Created dataloaders: {len(train_loader)} train batches, {len(test_loader)} test batches")
     
     return train_loader, test_loader
 
 
-def run_enhanced_experiment(model, train_loader, test_loader, epochs: int = 20, 
+def run_enhanced_experiment(model, train_loader, test_loader, epochs: int = 30, 
                           beta: float = 1.0, model_name: str = "Model"):
     """Run enhanced training and evaluation with comprehensive metrics"""
     
@@ -163,7 +137,7 @@ def run_enhanced_experiment(model, train_loader, test_loader, epochs: int = 20,
             
             with torch.no_grad():
                 for batch_data, batch_labels in test_loader:
-                    # Compute test loss
+                    # Compute test loss (CIFAR data comes as (data, label) tuples)
                     loss_dict = model.compute_loss(batch_data, batch_labels, beta=beta)
                     test_loss += loss_dict['total_loss'].item()
                     test_batches += 1
@@ -239,7 +213,7 @@ def statistical_hypothesis_testing(results: Dict) -> Dict[str, Any]:
     
     # Extract final metrics for comparison
     baseline_name = 'Enhanced_Standard_VAE'
-    derp_name = 'Enhanced_DERP_VAE_5probes'
+    derp_name = 'DERP_VAE_5probes'
     
     if baseline_name not in results or derp_name not in results:
         logger.warning("Required models not found for statistical testing")
@@ -346,7 +320,7 @@ def create_visualizations(results: Dict, output_dir: Path):
     
     # Loss components for DERP-VAE
     ax4 = axes[1, 1]
-    derp_model = 'Enhanced_DERP_VAE_5probes'
+    derp_model = 'DERP_VAE_5probes'
     if derp_model in results:
         components = results[derp_model]['loss_components']
         epochs = range(1, len(components['recon']) + 1)
@@ -377,28 +351,28 @@ def main():
     # Set seeds for reproducibility
     set_seeds(42)
     
-    # Create enhanced dataset with labels
-    train_loader, test_loader = create_enhanced_dataset(n_samples=2000, input_dim=256)
+    # Load CIFAR-10 dataset
+    train_loader, test_loader = get_cifar_dataset(batch_size=128)
     
     # Analyze dataset properties
     dataset_stats = analyze_dataset_properties(train_loader)
     logger.info(f"Dataset statistics: {dataset_stats}")
     
-    # Enhanced model configurations with reduced latent dimensions
+    # Enhanced model configurations for CIFAR-10
     base_config = {
-        'input_dim': 256,
-        'hidden_dim': 128,  # This will be further reduced in the enhanced architectures
+        'input_dim': 3072,  # 32*32*3 for CIFAR-10
+        'hidden_dim': 256,  # Increased for image data
         'latent_dim': 4,    # KEY CHANGE: Reduced from 32 to 4
-        'n_classes': 5      # Gaussian mixture components
+        'n_classes': 10     # CIFAR-10 has 10 classes
     }
     
     # Define experiments with enhanced multi-loss models
     experiments = [
-        ('Enhanced_Standard_VAE', EnhancedStandardVAE(**base_config), 1.0),
-        ('Enhanced_Beta_VAE_0.5', EnhancedStandardVAE(**base_config), 0.5),
-        ('Enhanced_Beta_VAE_2.0', EnhancedStandardVAE(**base_config), 2.0),
-        ('Enhanced_DERP_VAE_3probes', EnhancedDERP_VAE(**base_config, n_probes=3, enforcement_weight=1.0, device='cpu'), 1.0),
-        ('Enhanced_DERP_VAE_5probes', EnhancedDERP_VAE(**base_config, n_probes=5, enforcement_weight=1.0, device='cpu'), 1.0),
+        ('Enhanced_Standard_VAE', StandardVAE(**base_config), 1.0),
+        ('Enhanced_Beta_VAE_0.5', StandardVAE(**base_config), 0.5),
+        ('Enhanced_Beta_VAE_2.0', StandardVAE(**base_config), 2.0),
+        ('DERP_VAE_3probes', DERP_VAE(**base_config, n_probes=3, enforcement_weight=1.0, device='cpu'), 1.0),
+        ('DERP_VAE_5probes', DERP_VAE(**base_config, n_probes=5, enforcement_weight=1.0, device='cpu'), 1.0),
     ]
     
     results = {}
@@ -412,7 +386,7 @@ def main():
         
         result = run_enhanced_experiment(
             model, train_loader, test_loader, 
-            epochs=20, beta=beta, model_name=name
+            epochs=30, beta=beta, model_name=name
         )
         result['model_name'] = name
         result['beta'] = beta
@@ -427,6 +401,8 @@ def main():
         logger.info(f"  Activation Rate: {final.get('activation_rate', 0):.4f}")
         logger.info(f"  Class Separation Ratio: {final.get('class_separation_ratio', 0):.4f}")
         logger.info(f"  Normality Compliance: {final.get('normality_compliance', 0):.4f}")
+        if 'test_ks_distance_loss' in final:
+            logger.info(f"  KS Distance: {final.get('test_ks_distance_loss', 0):.4f}")
         logger.info(f"  Training Time: {result['training_time']:.2f}s")
     
     # Statistical hypothesis testing
