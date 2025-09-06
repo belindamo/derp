@@ -1,0 +1,44 @@
+{
+  "Standard_VAE": {
+    "model_name": "Standard_VAE",
+    "beta": 1.0,
+    "final_metrics": {
+      "epoch": 5,
+      "test_loss": 2022.4523315429688,
+      "kl_divergence": 5.691502571105957,
+      "mutual_information": -5.691502571105957,
+      "activation_rate": 0.9875,
+      "avg_posterior_variance": 0.13763238489627838,
+      "classification_accuracy": 0.11500000208616257
+    },
+    "training_time": 0.6760890483856201
+  },
+  "Beta_VAE_0.5": {
+    "model_name": "Beta_VAE_0.5",
+    "beta": 0.5,
+    "final_metrics": {
+      "epoch": 5,
+      "test_loss": 2006.7190246582031,
+      "kl_divergence": 7.70241641998291,
+      "mutual_information": -7.70241641998291,
+      "activation_rate": 0.91625,
+      "avg_posterior_variance": 0.11172672361135483,
+      "classification_accuracy": 0.0949999988079071
+    },
+    "training_time": 0.6550090312957764
+  },
+  "DERP_VAE_3probes": {
+    "model_name": "DERP_VAE_3probes",
+    "beta": 1.0,
+    "final_metrics": {
+      "epoch": 5,
+      "test_loss": 2009.1106567382812,
+      "kl_divergence": 6.010747909545898,
+      "mutual_information": -6.010747909545898,
+      "activation_rate": 0.9725,
+      "avg_posterior_variance": 0.10987632721662521,
+      "classification_accuracy": 0.06499999761581421
+    },
+    "training_time": 0.6889081001281738
+  }
+}

@@ -1,0 +1,116 @@
+python3 experiment.py
+2025-09-05 13:11:17,908 - INFO - Starting Enhanced DERP-VAE Experiment
+2025-09-05 13:11:17,908 - INFO - Loading CIFAR-10 dataset
+2025-09-05 13:11:18,755 - INFO - CIFAR-10 loaded: 50000 train samples, 10000 test samples
+2025-09-05 13:11:18,755 - INFO - Created dataloaders: 390 train batches, 79 test batches
+2025-09-05 13:11:18,755 - INFO - Created dataloaders: 390 train batches, 79 test batches
+2025-09-05 13:11:20,180 - INFO - Dataset statistics: {'num_samples': 49920, 'num_features': 3072, 'data_mean': 0.47339311242103577, 'data_std': 0.2515675127506256, 'data_min': 0.0, 'data_max': 1.0, 'num_classes': 10, 'class_0_count': 4989, 'class_0_fraction': 0.09993990384615385, 'class_1_count': 4990, 'class_1_fraction': 0.0999599358974359, 'class_2_count': 4993, 'class_2_fraction': 0.10002003205128206, 'class_3_count': 4989, 'class_3_fraction': 0.09993990384615385, 'class_4_count': 4993, 'class_4_fraction': 0.10002003205128206, 'class_5_count': 4996, 'class_5_fraction': 0.10008012820512821, 'class_6_count': 4991, 'class_6_fraction': 0.09997996794871795, 'class_7_count': 4991, 'class_7_fraction': 0.09997996794871795, 'class_8_count': 4994, 'class_8_fraction': 0.10004006410256411, 'class_9_count': 4994, 'class_9_fraction': 0.10004006410256411}
+2025-09-05 13:11:20,198 - INFO - \n============================================================
+2025-09-05 13:11:20,198 - INFO - Running: Enhanced_Standard_VAE
+2025-09-05 13:11:20,198 - INFO - Beta: 1.0, Latent Dim: 4
+2025-09-05 13:11:20,198 - INFO - ============================================================
+2025-09-05 13:11:20,198 - INFO - Starting training for Enhanced_Standard_VAE
+2025-09-05 13:11:46,217 - INFO - Epoch 5: Train Loss=1928.1528, Test Loss=1980.9915, KL Div=8.5610, Classification Acc=0.2373, Activation Rate=0.7826
+2025-09-05 13:12:12,232 - INFO - Epoch 10: Train Loss=1921.8298, Test Loss=1985.0904, KL Div=8.6789, Classification Acc=0.2589, Activation Rate=0.7923
+2025-09-05 13:12:38,328 - INFO - Epoch 15: Train Loss=1917.9939, Test Loss=1984.8076, KL Div=9.0206, Classification Acc=0.2650, Activation Rate=0.7528
+2025-09-05 13:13:04,144 - INFO - Epoch 20: Train Loss=1916.6932, Test Loss=1958.7430, KL Div=9.1268, Classification Acc=0.2553, Activation Rate=0.7512
+2025-09-05 13:13:29,579 - INFO - Epoch 25: Train Loss=1915.3064, Test Loss=1969.4992, KL Div=9.0598, Classification Acc=0.2577, Activation Rate=0.7377
+2025-09-05 13:13:55,215 - INFO - Epoch 30: Train Loss=1914.6478, Test Loss=1979.7998, KL Div=9.1919, Classification Acc=0.2493, Activation Rate=0.7258
+2025-09-05 13:13:55,216 - INFO - \nEnhanced_Standard_VAE Final Results:
+2025-09-05 13:13:55,216 - INFO -   KL Divergence: 9.1919
+2025-09-05 13:13:55,216 - INFO -   Classification Accuracy: 0.2493
+2025-09-05 13:13:55,216 - INFO -   Activation Rate: 0.7258
+2025-09-05 13:13:55,216 - INFO -   Class Separation Ratio: 0.1468
+2025-09-05 13:13:55,216 - INFO -   Normality Compliance: 0.0000
+2025-09-05 13:13:55,216 - INFO -   Training Time: 155.02s
+2025-09-05 13:13:55,216 - INFO - \n============================================================
+2025-09-05 13:13:55,216 - INFO - Running: Enhanced_Beta_VAE_0.5
+2025-09-05 13:13:55,216 - INFO - Beta: 0.5, Latent Dim: 4
+2025-09-05 13:13:55,216 - INFO - ============================================================
+2025-09-05 13:13:55,216 - INFO - Starting training for Enhanced_Beta_VAE_0.5
+2025-09-05 13:14:21,724 - INFO - Epoch 5: Train Loss=1920.6604, Test Loss=1960.2145, KL Div=11.5096, Classification Acc=0.1680, Activation Rate=0.3732
+2025-09-05 13:14:48,029 - INFO - Epoch 10: Train Loss=1914.8602, Test Loss=1980.4774, KL Div=10.1368, Classification Acc=0.2515, Activation Rate=0.6987
+2025-09-05 13:15:14,672 - INFO - Epoch 15: Train Loss=1913.1819, Test Loss=1972.1161, KL Div=10.4065, Classification Acc=0.2706, Activation Rate=0.7298
+2025-09-05 13:15:40,579 - INFO - Epoch 20: Train Loss=1910.7310, Test Loss=1983.0515, KL Div=10.7599, Classification Acc=0.2637, Activation Rate=0.6335
+2025-09-05 13:16:05,949 - INFO - Epoch 25: Train Loss=1909.2207, Test Loss=1975.5640, KL Div=10.9545, Classification Acc=0.2593, Activation Rate=0.4790
+2025-09-05 13:16:31,612 - INFO - Epoch 30: Train Loss=1908.4127, Test Loss=1969.5430, KL Div=10.3716, Classification Acc=0.2662, Activation Rate=0.6724
+2025-09-05 13:16:31,613 - INFO - \nEnhanced_Beta_VAE_0.5 Final Results:
+2025-09-05 13:16:31,613 - INFO -   KL Divergence: 10.3716
+2025-09-05 13:16:31,613 - INFO -   Classification Accuracy: 0.2662
+2025-09-05 13:16:31,613 - INFO -   Activation Rate: 0.6724
+2025-09-05 13:16:31,613 - INFO -   Class Separation Ratio: 0.1944
+2025-09-05 13:16:31,613 - INFO -   Normality Compliance: 0.0000
+2025-09-05 13:16:31,613 - INFO -   Training Time: 156.40s
+2025-09-05 13:16:31,613 - INFO - \n============================================================
+2025-09-05 13:16:31,613 - INFO - Running: Enhanced_Beta_VAE_2.0
+2025-09-05 13:16:31,613 - INFO - Beta: 2.0, Latent Dim: 4
+2025-09-05 13:16:31,613 - INFO - ============================================================
+2025-09-05 13:16:31,614 - INFO - Starting training for Enhanced_Beta_VAE_2.0
+2025-09-05 13:16:57,636 - INFO - Epoch 5: Train Loss=1937.6867, Test Loss=1992.4730, KL Div=6.6302, Classification Acc=0.2462, Activation Rate=0.8900
+2025-09-05 13:17:23,607 - INFO - Epoch 10: Train Loss=1930.7539, Test Loss=1991.8903, KL Div=7.0162, Classification Acc=0.2417, Activation Rate=0.9618
+2025-09-05 13:17:49,451 - INFO - Epoch 15: Train Loss=1927.2777, Test Loss=1999.5557, KL Div=7.4571, Classification Acc=0.2551, Activation Rate=0.9611
+2025-09-05 13:18:15,395 - INFO - Epoch 20: Train Loss=1925.4741, Test Loss=1976.4641, KL Div=7.2928, Classification Acc=0.2575, Activation Rate=1.0000
+2025-09-05 13:18:41,315 - INFO - Epoch 25: Train Loss=1924.8171, Test Loss=1978.7449, KL Div=7.3967, Classification Acc=0.2573, Activation Rate=1.0000
+2025-09-05 13:19:07,573 - INFO - Epoch 30: Train Loss=1924.1335, Test Loss=1979.5759, KL Div=7.2560, Classification Acc=0.2493, Activation Rate=1.0000
+2025-09-05 13:19:07,574 - INFO - \nEnhanced_Beta_VAE_2.0 Final Results:
+2025-09-05 13:19:07,574 - INFO -   KL Divergence: 7.2560
+2025-09-05 13:19:07,574 - INFO -   Classification Accuracy: 0.2493
+2025-09-05 13:19:07,574 - INFO -   Activation Rate: 1.0000
+2025-09-05 13:19:07,574 - INFO -   Class Separation Ratio: 0.1437
+2025-09-05 13:19:07,574 - INFO -   Normality Compliance: 0.0000
+2025-09-05 13:19:07,574 - INFO -   Training Time: 155.96s
+2025-09-05 13:19:07,574 - INFO - \n============================================================
+2025-09-05 13:19:07,574 - INFO - Running: DERP_VAE_3probes
+2025-09-05 13:19:07,574 - INFO - Beta: 1.0, Latent Dim: 4
+2025-09-05 13:19:07,574 - INFO - ============================================================
+2025-09-05 13:19:07,574 - INFO - Starting training for DERP_VAE_3probes
+2025-09-05 13:19:34,123 - INFO - Epoch 5: Train Loss=1927.9193, Test Loss=1981.9605, KL Div=8.0824, Classification Acc=0.2243, Activation Rate=0.8071
+2025-09-05 13:20:00,609 - INFO - Epoch 10: Train Loss=1920.5583, Test Loss=1996.4863, KL Div=8.7738, Classification Acc=0.2569, Activation Rate=0.7629
+2025-09-05 13:20:26,671 - INFO - Epoch 15: Train Loss=1917.7182, Test Loss=1982.1717, KL Div=9.0183, Classification Acc=0.2522, Activation Rate=0.7486
+2025-09-05 13:20:52,622 - INFO - Epoch 20: Train Loss=1916.0959, Test Loss=1992.9132, KL Div=9.1256, Classification Acc=0.2544, Activation Rate=0.7415
+2025-09-05 13:21:19,691 - INFO - Epoch 25: Train Loss=1915.0783, Test Loss=1970.8219, KL Div=9.2607, Classification Acc=0.2556, Activation Rate=0.7256
+2025-09-05 13:21:45,559 - INFO - Epoch 30: Train Loss=1915.0909, Test Loss=1976.4457, KL Div=9.1278, Classification Acc=0.2476, Activation Rate=0.7239
+2025-09-05 13:21:45,561 - INFO - \nDERP_VAE_3probes Final Results:
+2025-09-05 13:21:45,561 - INFO -   KL Divergence: 9.1278
+2025-09-05 13:21:45,561 - INFO -   Classification Accuracy: 0.2476
+2025-09-05 13:21:45,561 - INFO -   Activation Rate: 0.7239
+2025-09-05 13:21:45,561 - INFO -   Class Separation Ratio: 0.1448
+2025-09-05 13:21:45,561 - INFO -   Normality Compliance: 0.0000
+2025-09-05 13:21:45,561 - INFO -   Training Time: 157.99s
+2025-09-05 13:21:45,561 - INFO - \n============================================================
+2025-09-05 13:21:45,561 - INFO - Running: DERP_VAE_5probes
+2025-09-05 13:21:45,561 - INFO - Beta: 1.0, Latent Dim: 4
+2025-09-05 13:21:45,561 - INFO - ============================================================
+2025-09-05 13:21:45,561 - INFO - Starting training for DERP_VAE_5probes
+2025-09-05 13:22:12,773 - INFO - Epoch 5: Train Loss=1929.5234, Test Loss=1999.1987, KL Div=8.3825, Classification Acc=0.2191, Activation Rate=0.7776
+2025-09-05 13:22:39,550 - INFO - Epoch 10: Train Loss=1921.4722, Test Loss=1994.1021, KL Div=8.7113, Classification Acc=0.2540, Activation Rate=0.7669
+2025-09-05 13:23:06,588 - INFO - Epoch 15: Train Loss=1918.4193, Test Loss=2002.5770, KL Div=9.1707, Classification Acc=0.2500, Activation Rate=0.7492
+2025-09-05 13:23:33,389 - INFO - Epoch 20: Train Loss=1916.9984, Test Loss=1971.0615, KL Div=8.4520, Classification Acc=0.2524, Activation Rate=0.7928
+2025-09-05 13:23:59,938 - INFO - Epoch 25: Train Loss=1915.6824, Test Loss=1996.3828, KL Div=9.0899, Classification Acc=0.2411, Activation Rate=0.7478
+2025-09-05 13:24:26,955 - INFO - Epoch 30: Train Loss=1914.4035, Test Loss=1967.9090, KL Div=8.7099, Classification Acc=0.2469, Activation Rate=0.7680
+2025-09-05 13:24:26,956 - INFO - \nDERP_VAE_5probes Final Results:
+2025-09-05 13:24:26,956 - INFO -   KL Divergence: 8.7099
+2025-09-05 13:24:26,956 - INFO -   Classification Accuracy: 0.2469
+2025-09-05 13:24:26,956 - INFO -   Activation Rate: 0.7680
+2025-09-05 13:24:26,956 - INFO -   Class Separation Ratio: 0.1264
+2025-09-05 13:24:26,956 - INFO -   Normality Compliance: 0.0000
+2025-09-05 13:24:26,956 - INFO -   Training Time: 161.39s
+2025-09-05 13:24:26,956 - INFO - Conducting statistical hypothesis testing...
+2025-09-05 13:24:26,956 - INFO - \n======================================================================
+2025-09-05 13:24:26,956 - INFO - STATISTICAL HYPOTHESIS TESTING RESULTS
+2025-09-05 13:24:26,956 - INFO - ======================================================================
+2025-09-05 13:24:26,956 - INFO - \nH1 (Posterior Collapse Prevention): ❌ NOT SUPPORTED
+2025-09-05 13:24:26,956 - INFO -   KL Divergence Improvement: 5.2% (threshold: 10.0%)
+2025-09-05 13:24:26,956 - INFO -   Effect Size (Cohen's d): 4.820 (large)
+2025-09-05 13:24:26,956 - INFO - \nH2 (Classification Performance): ✅ MAINTAINED
+2025-09-05 13:24:26,956 - INFO -   Accuracy Change: -0.2% (threshold: >-5.0%)
+2025-09-05 13:24:26,956 - INFO -   Baseline: 0.249, DERP: 0.247
+2025-09-05 13:24:26,956 - INFO - \nH3 (Class Separation): ❌ NO IMPROVEMENT
+2025-09-05 13:24:26,956 - INFO -   Separation Ratio Improvement: -0.020
+2025-09-05 13:24:26,956 - INFO -   Baseline: 0.147, DERP: 0.126
+2025-09-05 13:24:26,956 - INFO - \nOVERALL ASSESSMENT:
+2025-09-05 13:24:26,956 - INFO -   Hypotheses Supported: 1/3
+2025-09-05 13:24:26,956 - INFO -   Success Rate: 33.3%
+2025-09-05 13:24:26,956 - INFO - Creating experimental visualizations...
+2025-09-05 13:24:27,727 - INFO - Visualizations saved to ../results
+2025-09-05 13:24:27,727 - INFO - \nDetailed results saved to ../results/enhanced_experiment_results.json
