@@ -368,6 +368,73 @@ def main():
     
     logger.info("")
     
+    # Create comprehensive hyperparameter dictionary (moved here before use)
+    hyperparameters_summary = {}
+    for name, model, beta in experiments:
+        hyperparams = {
+            # Model Architecture
+            'architecture': {
+                'model_type': 'DERP-VAE' if 'DERP' in name else 'Standard VAE',
+                'input_dim': base_config['input_dim'],
+                'hidden_dim': base_config['hidden_dim'],
+                'latent_dim': base_config['latent_dim'],
+                'n_classes': base_config['n_classes'],
+                'encoder_layers': f"{base_config['input_dim']} -> {base_config['hidden_dim']} -> {base_config['hidden_dim']//2} -> {base_config['latent_dim']}",
+                'decoder_layers': f"{base_config['latent_dim']} -> {base_config['hidden_dim']//2} -> {base_config['hidden_dim']} -> {base_config['input_dim']}",
+                'classifier_layers': f"{base_config['latent_dim']} -> {base_config['latent_dim']//2} -> {base_config['n_classes']}",
+                'activation': 'ReLU',
+                'output_activation': 'Sigmoid (reconstruction), None (classification)',
+                'dropout_rate': 0.2
+            },
+            # Training
+            'training': {
+                'optimizer': 'Adam',
+                'learning_rate': 1e-4,
+                'lr_scheduler': 'ReduceLROnPlateau',
+                'scheduler_patience': 3,
+                'scheduler_factor': 0.5,
+                'batch_size': BATCH_SIZE,
+                'epochs': EPOCHS,
+                'gradient_clip_norm': 1.0,
+                'beta': beta
+            },
+            # Dataset
+            'dataset': {
+                'name': 'CelebA',
+                'image_size': f'{IMAGE_SIZE}x{IMAGE_SIZE}',
+                'channels': 3,
+                'num_samples': NUM_SAMPLES or 'Full dataset (202,599)',
+                'target_attribute': 'Smiling',
+                'preprocessing': 'Resize to 64x64, normalize to [0,1]'
+            },
+            # Loss Components
+            'loss_components': {
+                'reconstruction_loss': 'BCE',
+                'kl_divergence_weight': beta,
+                'classification_loss': 'CrossEntropy',
+                'classification_weight': 0.1
+            },
+            # Compute
+            'compute': {
+                'device': device,
+                'precision': 'float32'
+            }
+        }
+        
+        # Add DERP-specific parameters
+        if 'DERP' in name:
+            hyperparams['derp_specific'] = {
+                'n_probes': 5,
+                'enforcement_weight': 0.5,
+                'probe_dimensions': base_config['latent_dim'],
+                'target_distribution': 'Standard Normal',
+                'ks_distance_type': 'Modified (average deviation)',
+                'perceptual_loss_weight': 0.01,
+                'perceptual_loss_layers': ['relu1_2', 'relu2_2', 'relu3_3']
+            }
+        
+        hyperparameters_summary[name] = hyperparams
+    
     # Print detailed hyperparameter comparison
     logger.info("\n" + "="*70)
     logger.info("DETAILED HYPERPARAMETER BREAKDOWN")
@@ -457,74 +524,7 @@ def main():
     results_path = Path("../results")
     results_path.mkdir(exist_ok=True)
     
-    # Create comprehensive hyperparameter dictionary
-    hyperparameters_summary = {}
-    for name, model, beta in experiments:
-        hyperparams = {
-            # Model Architecture
-            'architecture': {
-                'model_type': 'DERP-VAE' if 'DERP' in name else 'Standard VAE',
-                'input_dim': base_config['input_dim'],
-                'hidden_dim': base_config['hidden_dim'],
-                'latent_dim': base_config['latent_dim'],
-                'n_classes': base_config['n_classes'],
-                'encoder_layers': f"{base_config['input_dim']} -> {base_config['hidden_dim']} -> {base_config['hidden_dim']//2} -> {base_config['latent_dim']}",
-                'decoder_layers': f"{base_config['latent_dim']} -> {base_config['hidden_dim']//2} -> {base_config['hidden_dim']} -> {base_config['input_dim']}",
-                'classifier_layers': f"{base_config['latent_dim']} -> {base_config['latent_dim']//2} -> {base_config['n_classes']}",
-                'activation': 'ReLU',
-                'output_activation': 'Sigmoid (reconstruction), None (classification)',
-                'dropout_rate': 0.2
-            },
-            # Training
-            'training': {
-                'optimizer': 'Adam',
-                'learning_rate': 1e-4,
-                'lr_scheduler': 'ReduceLROnPlateau',
-                'scheduler_patience': 3,
-                'scheduler_factor': 0.5,
-                'batch_size': BATCH_SIZE,
-                'epochs': EPOCHS,
-                'gradient_clip_norm': 1.0,
-                'beta': beta
-            },
-            # Dataset
-            'dataset': {
-                'name': 'CelebA',
-                'image_size': f'{IMAGE_SIZE}x{IMAGE_SIZE}',
-                'channels': 3,
-                'num_samples': NUM_SAMPLES or 'Full dataset (202,599)',
-                'target_attribute': 'Smiling',
-                'preprocessing': 'Resize to 64x64, normalize to [0,1]'
-            },
-            # Loss Components
-            'loss_components': {
-                'reconstruction_loss': 'BCE',
-                'kl_divergence_weight': beta,
-                'classification_loss': 'CrossEntropy',
-                'classification_weight': 0.1
-            },
-            # Compute
-            'compute': {
-                'device': device,
-                'precision': 'float32'
-            }
-        }
-        
-        # Add DERP-specific parameters
-        if 'DERP' in name:
-            hyperparams['derp_specific'] = {
-                'n_probes': 5,
-                'enforcement_weight': 0.5,
-                'probe_dimensions': base_config['latent_dim'],
-                'target_distribution': 'Standard Normal',
-                'ks_distance_type': 'Modified (average deviation)',
-                'perceptual_loss_weight': 0.01,
-                'perceptual_loss_layers': ['relu1_2', 'relu2_2', 'relu3_3']
-            }
-        
-        hyperparameters_summary[name] = hyperparams
-    
-    # Save to JSON
+    # Save to JSON (hyperparameters_summary already created above)
     json_results = {
         name: {
             'model_name': r['model_name'],
