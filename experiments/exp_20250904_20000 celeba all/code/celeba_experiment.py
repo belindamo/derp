@@ -311,6 +311,119 @@ def main():
         logger.info(f"  Evaluation KS Distance: {final.get('eval_ks_distance', 0):.4f}")
         logger.info(f"  Training Time: {result['training_time']:.2f}s")
     
+    # Print hyperparameter table
+    logger.info("\n" + "="*70)
+    logger.info("HYPERPARAMETER SUMMARY TABLE")
+    logger.info("="*70)
+    
+    # Collect all hyperparameters
+    hyperparam_table = []
+    for name, model, beta in experiments:
+        params = {
+            'Model': name,
+            'Beta': beta,
+            'Input Dim': base_config['input_dim'],
+            'Hidden Dim': base_config['hidden_dim'],
+            'Latent Dim': base_config['latent_dim'],
+            'N Classes': base_config['n_classes'],
+            'Learning Rate': 1e-4,
+            'Batch Size': BATCH_SIZE,
+            'Image Size': IMAGE_SIZE,
+            'Epochs': EPOCHS,
+            'Optimizer': 'Adam',
+            'LR Scheduler': 'ReduceLROnPlateau',
+            'Scheduler Patience': 3,
+            'Scheduler Factor': 0.5,
+            'Dropout Rate': 0.2,
+            'Grad Clip Norm': 1.0,
+        }
+        
+        # Add model-specific parameters
+        if 'DERP' in name:
+            params['N Probes'] = 5
+            params['Enforcement Weight'] = 0.5
+            params['Probe Dims'] = base_config['latent_dim']
+            params['Target Distribution'] = 'Normal'
+        else:
+            params['N Probes'] = 'N/A'
+            params['Enforcement Weight'] = 'N/A'
+            params['Probe Dims'] = 'N/A'
+            params['Target Distribution'] = 'N/A'
+        
+        hyperparam_table.append(params)
+    
+    # Print table header
+    headers = list(hyperparam_table[0].keys())
+    col_widths = {h: max(len(str(h)), max(len(str(row.get(h, ''))) for row in hyperparam_table)) for h in headers}
+    
+    # Print header row
+    header_line = " | ".join(f"{h:<{col_widths[h]}}" for h in headers)
+    logger.info(header_line)
+    logger.info("-" * len(header_line))
+    
+    # Print data rows
+    for row in hyperparam_table:
+        data_line = " | ".join(f"{str(row.get(h, '')):<{col_widths[h]}}" for h in headers)
+        logger.info(data_line)
+    
+    logger.info("")
+    
+    # Print detailed hyperparameter comparison
+    logger.info("\n" + "="*70)
+    logger.info("DETAILED HYPERPARAMETER BREAKDOWN")
+    logger.info("="*70)
+    
+    for name in hyperparameters_summary:
+        logger.info(f"\n{name}:")
+        logger.info("-" * len(name))
+        hp = hyperparameters_summary[name]
+        
+        # Architecture details
+        logger.info("  Architecture:")
+        for key, value in hp['architecture'].items():
+            logger.info(f"    {key}: {value}")
+        
+        # Training details
+        logger.info("  Training:")
+        for key, value in hp['training'].items():
+            logger.info(f"    {key}: {value}")
+        
+        # Loss components
+        logger.info("  Loss Components:")
+        for key, value in hp['loss_components'].items():
+            logger.info(f"    {key}: {value}")
+        
+        # DERP-specific if applicable
+        if 'derp_specific' in hp:
+            logger.info("  DERP-Specific Parameters:")
+            for key, value in hp['derp_specific'].items():
+                logger.info(f"    {key}: {value}")
+    
+    # Save hyperparameter summary to markdown file
+    with open(results_path / "hyperparameter_summary.md", 'w') as f:
+        f.write("# CelebA Experiment Hyperparameter Summary\n\n")
+        f.write("## Quick Reference Table\n\n")
+        
+        # Write markdown table
+        headers = list(hyperparam_table[0].keys())
+        f.write("| " + " | ".join(headers) + " |\n")
+        f.write("| " + " | ".join(["-" * len(h) for h in headers]) + " |\n")
+        for row in hyperparam_table:
+            f.write("| " + " | ".join(str(row.get(h, '')) for h in headers) + " |\n")
+        
+        f.write("\n## Detailed Configuration\n\n")
+        for name in hyperparameters_summary:
+            f.write(f"### {name}\n\n")
+            hp = hyperparameters_summary[name]
+            
+            for section, params in hp.items():
+                f.write(f"#### {section.replace('_', ' ').title()}\n")
+                for key, value in params.items():
+                    f.write(f"- **{key.replace('_', ' ').title()}**: {value}\n")
+                f.write("\n")
+    
+    logger.info(f"\nHyperparameter summary saved to {results_path / 'hyperparameter_summary.md'}")
+    
     # Compare results
     logger.info("\n" + "="*70)
     logger.info("COMPARISON RESULTS")
@@ -344,6 +457,73 @@ def main():
     results_path = Path("../results")
     results_path.mkdir(exist_ok=True)
     
+    # Create comprehensive hyperparameter dictionary
+    hyperparameters_summary = {}
+    for name, model, beta in experiments:
+        hyperparams = {
+            # Model Architecture
+            'architecture': {
+                'model_type': 'DERP-VAE' if 'DERP' in name else 'Standard VAE',
+                'input_dim': base_config['input_dim'],
+                'hidden_dim': base_config['hidden_dim'],
+                'latent_dim': base_config['latent_dim'],
+                'n_classes': base_config['n_classes'],
+                'encoder_layers': f"{base_config['input_dim']} -> {base_config['hidden_dim']} -> {base_config['hidden_dim']//2} -> {base_config['latent_dim']}",
+                'decoder_layers': f"{base_config['latent_dim']} -> {base_config['hidden_dim']//2} -> {base_config['hidden_dim']} -> {base_config['input_dim']}",
+                'classifier_layers': f"{base_config['latent_dim']} -> {base_config['latent_dim']//2} -> {base_config['n_classes']}",
+                'activation': 'ReLU',
+                'output_activation': 'Sigmoid (reconstruction), None (classification)',
+                'dropout_rate': 0.2
+            },
+            # Training
+            'training': {
+                'optimizer': 'Adam',
+                'learning_rate': 1e-4,
+                'lr_scheduler': 'ReduceLROnPlateau',
+                'scheduler_patience': 3,
+                'scheduler_factor': 0.5,
+                'batch_size': BATCH_SIZE,
+                'epochs': EPOCHS,
+                'gradient_clip_norm': 1.0,
+                'beta': beta
+            },
+            # Dataset
+            'dataset': {
+                'name': 'CelebA',
+                'image_size': f'{IMAGE_SIZE}x{IMAGE_SIZE}',
+                'channels': 3,
+                'num_samples': NUM_SAMPLES or 'Full dataset (202,599)',
+                'target_attribute': 'Smiling',
+                'preprocessing': 'Resize to 64x64, normalize to [0,1]'
+            },
+            # Loss Components
+            'loss_components': {
+                'reconstruction_loss': 'BCE',
+                'kl_divergence_weight': beta,
+                'classification_loss': 'CrossEntropy',
+                'classification_weight': 0.1
+            },
+            # Compute
+            'compute': {
+                'device': device,
+                'precision': 'float32'
+            }
+        }
+        
+        # Add DERP-specific parameters
+        if 'DERP' in name:
+            hyperparams['derp_specific'] = {
+                'n_probes': 5,
+                'enforcement_weight': 0.5,
+                'probe_dimensions': base_config['latent_dim'],
+                'target_distribution': 'Standard Normal',
+                'ks_distance_type': 'Modified (average deviation)',
+                'perceptual_loss_weight': 0.01,
+                'perceptual_loss_layers': ['relu1_2', 'relu2_2', 'relu3_3']
+            }
+        
+        hyperparameters_summary[name] = hyperparams
+    
     # Save to JSON
     json_results = {
         name: {
@@ -352,7 +532,8 @@ def main():
             'config': r['config'],
             'final_metrics': r['final_metrics'],
             'training_time': r['training_time'],
-            'train_losses': r['train_losses'][-5:] if len(r['train_losses']) > 5 else r['train_losses']
+            'train_losses': r['train_losses'][-5:] if len(r['train_losses']) > 5 else r['train_losses'],
+            'hyperparameters': hyperparameters_summary[name]
         }
         for name, r in results.items()
     }

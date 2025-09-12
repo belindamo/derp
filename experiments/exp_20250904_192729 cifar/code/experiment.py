@@ -48,6 +48,48 @@ def set_seeds(seed: int = 42):
     np.random.seed(seed)
 
 
+def compute_ks_distance_for_latents(latent_samples: torch.Tensor, n_random_projections: int = 10) -> float:
+    """
+    Compute average KS-distance for latent representations using random projections.
+    This is a standalone function that can be applied to any VAE model's latents.
+    
+    Args:
+        latent_samples: [batch_size, latent_dim] tensor of latent representations
+        n_random_projections: number of random projections to average over
+    
+    Returns:
+        average KS-distance across all projections
+    """
+    batch_size, latent_dim = latent_samples.shape
+    device = latent_samples.device
+    
+    total_ks_distance = 0.0
+    
+    for _ in range(n_random_projections):
+        # Generate random projection vector
+        projection_vector = torch.randn(latent_dim, device=device)
+        projection_vector = projection_vector / torch.norm(projection_vector)
+        
+        # Project latents to 1D
+        projections = torch.matmul(latent_samples, projection_vector)  # [batch_size]
+        
+        # Sort projections for KS test
+        projections_sorted, _ = torch.sort(projections)
+        n = len(projections_sorted)
+        
+        # Empirical CDF
+        empirical_cdf = torch.arange(1, n+1, dtype=torch.float32, device=device) / n
+        
+        # Theoretical CDF (standard normal)
+        theoretical_cdf = 0.5 * (1 + torch.erf(projections_sorted / np.sqrt(2)))
+        
+        # KS distance (maximum deviation)
+        ks_distance = torch.max(torch.abs(empirical_cdf - theoretical_cdf))
+        total_ks_distance += ks_distance.item()
+    
+    return total_ks_distance / n_random_projections
+
+
 def get_cifar_dataset(batch_size: int = 64):
     """Get CIFAR-10 dataset loaders"""
     logger.info("Loading CIFAR-10 dataset")
@@ -167,6 +209,10 @@ def run_enhanced_experiment(model, train_loader, test_loader, epochs: int = 30,
             # Compute comprehensive metrics
             enhanced_metrics = compute_enhanced_metrics(all_mus, all_logvars, all_class_logits, all_true_labels)
             
+            # Compute KS-distance for all models (not just DERP-VAE)
+            # This is done during evaluation only, so it doesn't affect training
+            eval_ks_distance = compute_ks_distance_for_latents(all_latents, n_random_projections=10)
+            
             # Statistical normality testing with label awareness
             statistical_metrics = enhanced_statistical_test(all_latents, all_true_labels)
             
@@ -179,6 +225,7 @@ def run_enhanced_experiment(model, train_loader, test_loader, epochs: int = 30,
             test_metric = {
                 'epoch': epoch + 1,
                 'test_loss': test_loss,
+                'eval_ks_distance': eval_ks_distance,  # KS-distance computed during evaluation
                 **{f'test_{k}_loss': v for k, v in test_loss_components.items()},
                 **enhanced_metrics,
                 **statistical_metrics
@@ -192,7 +239,8 @@ def run_enhanced_experiment(model, train_loader, test_loader, epochs: int = 30,
                 f"Test Loss={test_loss:.4f}, "
                 f"KL Div={enhanced_metrics['kl_divergence']:.4f}, "
                 f"Classification Acc={enhanced_metrics['classification_accuracy']:.4f}, "
-                f"Activation Rate={enhanced_metrics['activation_rate']:.4f}"
+                f"Activation Rate={enhanced_metrics['activation_rate']:.4f}, "
+                f"Eval KS={eval_ks_distance:.4f}"
             )
     
     training_time = time.time() - start_time
@@ -404,6 +452,160 @@ def main():
         if 'test_ks_distance_loss' in final:
             logger.info(f"  KS Distance: {final.get('test_ks_distance_loss', 0):.4f}")
         logger.info(f"  Training Time: {result['training_time']:.2f}s")
+        if 'eval_ks_distance' in final:
+            logger.info(f"  Evaluation KS Distance: {final.get('eval_ks_distance', 0):.4f}")
+    
+    # Print hyperparameter table
+    logger.info("\n" + "="*70)
+    logger.info("HYPERPARAMETER SUMMARY TABLE")
+    logger.info("="*70)
+    
+    # Collect all hyperparameters
+    hyperparam_table = []
+    for name, model, beta in experiments:
+        params = {
+            'Model': name,
+            'Beta': beta,
+            'Input Dim': base_config['input_dim'],
+            'Hidden Dim': base_config['hidden_dim'],
+            'Latent Dim': base_config['latent_dim'],
+            'N Classes': base_config['n_classes'],
+            'Learning Rate': 1e-3,
+            'Batch Size': 128,
+            'Epochs': 20,
+            'Optimizer': 'Adam',
+            'LR Scheduler': 'ReduceLROnPlateau',
+            'Scheduler Patience': 5,
+            'Scheduler Factor': 0.5,
+            'Dropout Rate': 0.2,
+            'Grad Clip Norm': 1.0,
+        }
+        
+        # Add model-specific parameters
+        if 'DERP' in name:
+            # Extract probes from name
+            n_probes = int(name.split('_')[2].replace('probes', ''))
+            params['N Probes'] = n_probes
+            params['Enforcement Weight'] = 1.0
+            params['Probe Dims'] = base_config['latent_dim']
+            params['Target Distribution'] = 'Normal'
+        else:
+            params['N Probes'] = 'N/A'
+            params['Enforcement Weight'] = 'N/A'
+            params['Probe Dims'] = 'N/A'
+            params['Target Distribution'] = 'N/A'
+        
+        hyperparam_table.append(params)
+    
+    # Print table header
+    headers = list(hyperparam_table[0].keys())
+    col_widths = {h: max(len(str(h)), max(len(str(row.get(h, ''))) for row in hyperparam_table)) for h in headers}
+    
+    # Print header row
+    header_line = " | ".join(f"{h:<{col_widths[h]}}" for h in headers)
+    logger.info(header_line)
+    logger.info("-" * len(header_line))
+    
+    # Print data rows
+    for row in hyperparam_table:
+        data_line = " | ".join(f"{str(row.get(h, '')):<{col_widths[h]}}" for h in headers)
+        logger.info(data_line)
+    
+    logger.info("")
+    
+    # Print detailed hyperparameter comparison
+    logger.info("\n" + "="*70)
+    logger.info("DETAILED HYPERPARAMETER BREAKDOWN")
+    logger.info("="*70)
+    
+    # Create hyperparameters summary
+    hyperparameters_summary = {}
+    for name, model, beta in experiments:
+        hyperparams = {
+            'architecture': {
+                'model_type': 'DERP-VAE' if 'DERP' in name else 'Standard VAE',
+                'input_dim': base_config['input_dim'],
+                'hidden_dim': base_config['hidden_dim'],
+                'latent_dim': base_config['latent_dim'],
+                'n_classes': base_config['n_classes'],
+                'encoder_layers': f"{base_config['input_dim']} -> {base_config['hidden_dim']} -> {base_config['hidden_dim']//2} -> {base_config['latent_dim']}",
+                'decoder_layers': f"{base_config['latent_dim']} -> {base_config['hidden_dim']//2} -> {base_config['hidden_dim']} -> {base_config['input_dim']}",
+                'classifier_layers': f"{base_config['latent_dim']} -> {base_config['latent_dim']//2} -> {base_config['n_classes']}",
+                'activation': 'ReLU',
+                'output_activation': 'Sigmoid (reconstruction), None (classification)',
+                'dropout_rate': 0.2
+            },
+            'training': {
+                'optimizer': 'Adam',
+                'learning_rate': 1e-3,
+                'lr_scheduler': 'ReduceLROnPlateau',
+                'scheduler_patience': 5,
+                'scheduler_factor': 0.5,
+                'batch_size': 128,
+                'epochs': 20,
+                'gradient_clip_norm': 1.0,
+                'beta': beta
+            },
+            'dataset': {
+                'name': 'CIFAR-10',
+                'image_size': '32x32',
+                'channels': 3,
+                'num_samples': '50,000 train / 10,000 test',
+                'num_classes': 10,
+                'preprocessing': 'Normalize to [0,1]'
+            },
+            'loss_components': {
+                'reconstruction_loss': 'BCE',
+                'kl_divergence_weight': beta,
+                'classification_loss': 'CrossEntropy',
+                'classification_weight': 0.1
+            },
+            'compute': {
+                'device': 'cpu',  # As specified in experiments
+                'precision': 'float32'
+            }
+        }
+        
+        # Add DERP-specific parameters
+        if 'DERP' in name:
+            n_probes = int(name.split('_')[2].replace('probes', ''))
+            hyperparams['derp_specific'] = {
+                'n_probes': n_probes,
+                'enforcement_weight': 1.0,
+                'probe_dimensions': base_config['latent_dim'],
+                'target_distribution': 'Standard Normal',
+                'ks_distance_type': 'Modified (average deviation)',
+                'perceptual_loss_weight': 0.01,
+                'perceptual_loss_layers': ['relu1_2', 'relu2_2', 'relu3_3']
+            }
+        
+        hyperparameters_summary[name] = hyperparams
+    
+    for name in hyperparameters_summary:
+        logger.info(f"\n{name}:")
+        logger.info("-" * len(name))
+        hp = hyperparameters_summary[name]
+        
+        # Architecture details
+        logger.info("  Architecture:")
+        for key, value in hp['architecture'].items():
+            logger.info(f"    {key}: {value}")
+        
+        # Training details
+        logger.info("  Training:")
+        for key, value in hp['training'].items():
+            logger.info(f"    {key}: {value}")
+        
+        # Loss components
+        logger.info("  Loss Components:")
+        for key, value in hp['loss_components'].items():
+            logger.info(f"    {key}: {value}")
+        
+        # DERP-specific if applicable
+        if 'derp_specific' in hp:
+            logger.info("  DERP-Specific Parameters:")
+            for key, value in hp['derp_specific'].items():
+                logger.info(f"    {key}: {value}")
     
     # Statistical hypothesis testing
     statistical_results = statistical_hypothesis_testing(results)
@@ -460,9 +662,39 @@ def main():
         json_results['statistical_analysis'] = statistical_results
         json_results['dataset_statistics'] = dataset_stats
         
+        # Add hyperparameters to each model
+        for k in json_results.keys():
+            if k in hyperparameters_summary:
+                json_results[k]['hyperparameters'] = hyperparameters_summary[k]
+        
         json.dump(json_results, f, indent=2)
     
     logger.info(f"\\nDetailed results saved to {results_path / 'enhanced_experiment_results.json'}")
+    
+    # Save hyperparameter summary to markdown file
+    with open(results_path / "hyperparameter_summary.md", 'w') as f:
+        f.write("# CIFAR-10 Experiment Hyperparameter Summary\n\n")
+        f.write("## Quick Reference Table\n\n")
+        
+        # Write markdown table
+        headers = list(hyperparam_table[0].keys())
+        f.write("| " + " | ".join(headers) + " |\n")
+        f.write("| " + " | ".join(["-" * len(h) for h in headers]) + " |\n")
+        for row in hyperparam_table:
+            f.write("| " + " | ".join(str(row.get(h, '')) for h in headers) + " |\n")
+        
+        f.write("\n## Detailed Configuration\n\n")
+        for name in hyperparameters_summary:
+            f.write(f"### {name}\n\n")
+            hp = hyperparameters_summary[name]
+            
+            for section, params in hp.items():
+                f.write(f"#### {section.replace('_', ' ').title()}\n")
+                for key, value in params.items():
+                    f.write(f"- **{key.replace('_', ' ').title()}**: {value}\n")
+                f.write("\n")
+    
+    logger.info(f"Hyperparameter summary saved to {results_path / 'hyperparameter_summary.md'}")
     
     return results, statistical_results
 
