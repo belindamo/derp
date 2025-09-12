@@ -33,7 +33,7 @@
   * Distributional compliance: K-S test statistics on latent representations
   * Classification cross-entropy loss and accuracy
 
-**Datasets**: CIFAR
+**Datasets**: CIFAR and Celeb-A
 
 **Experimental Procedure**:
 
