@@ -44,13 +44,15 @@ class RandomProbeTest:
     def modified_ks_distance(self, x: torch.Tensor, target_dist: str = 'normal') -> torch.Tensor:
         """
         Compute modified K-S distance using average rather than maximum deviation
-        for differentiable optimization
+        for differentiable optimization, scaled by sqrt(n) for statistical consistency
+        
+        Formula: D_avg = ∫ |F₁(x) - F₂(x)| dx / ∫ dx * sqrt(n)
         
         Args:
             x: 1D projected samples [batch_size]
             target_dist: target distribution ('normal' for standard Gaussian)
         Returns:
-            average K-S distance (differentiable)
+            average K-S distance (differentiable) scaled by sqrt(n)
         """
         x_sorted, _ = torch.sort(x)
         n = len(x_sorted)
@@ -67,7 +69,7 @@ class RandomProbeTest:
         
         # Modified K-S: average absolute deviation instead of maximum
         deviations = torch.abs(empirical_cdf - theoretical_cdf)
-        avg_ks_distance = torch.mean(deviations)
+        avg_ks_distance = torch.mean(deviations) * torch.sqrt(torch.tensor(n, dtype=torch.float32))
         
         return avg_ks_distance
     

@@ -37,6 +37,48 @@ def set_seeds(seed: int = 42):
         torch.cuda.manual_seed_all(seed)
 
 
+def compute_ks_distance_for_latents(latent_samples: torch.Tensor, n_random_projections: int = 10) -> float:
+    """
+    Compute average KS-distance for latent representations using random projections.
+    This is a standalone function that can be applied to any VAE model's latents.
+    
+    Args:
+        latent_samples: [batch_size, latent_dim] tensor of latent representations
+        n_random_projections: number of random projections to average over
+    
+    Returns:
+        average KS-distance across all projections
+    """
+    batch_size, latent_dim = latent_samples.shape
+    device = latent_samples.device
+    
+    total_ks_distance = 0.0
+    
+    for _ in range(n_random_projections):
+        # Generate random projection vector
+        projection_vector = torch.randn(latent_dim, device=device)
+        projection_vector = projection_vector / torch.norm(projection_vector)
+        
+        # Project latents to 1D
+        projections = torch.matmul(latent_samples, projection_vector)  # [batch_size]
+        
+        # Sort projections for KS test
+        projections_sorted, _ = torch.sort(projections)
+        n = len(projections_sorted)
+        
+        # Empirical CDF
+        empirical_cdf = torch.arange(1, n+1, dtype=torch.float32, device=device) / n
+        
+        # Theoretical CDF (standard normal)
+        theoretical_cdf = 0.5 * (1 + torch.erf(projections_sorted / np.sqrt(2)))
+        
+        # KS distance (maximum deviation)
+        ks_distance = torch.max(torch.abs(empirical_cdf - theoretical_cdf))
+        total_ks_distance += ks_distance.item()
+    
+    return total_ks_distance / n_random_projections
+
+
 def get_celeba_dataset(batch_size: int = 32, image_size: int = 64, num_samples: int = None):
     """Get CelebA dataset loaders"""
     logger.info(f"Loading CelebA dataset (image_size={image_size}x{image_size})")
@@ -126,6 +168,7 @@ def run_celeba_experiment(model, train_loader, test_loader, epochs: int = 10,
             all_logvars = []
             all_class_logits = []
             all_true_labels = []
+            all_latents = []  # Collect latent samples for KS-distance calculation
             
             with torch.no_grad():
                 for batch_data, batch_labels in tqdm(test_loader, desc="Evaluating", leave=False):
@@ -147,15 +190,21 @@ def run_celeba_experiment(model, train_loader, test_loader, epochs: int = 10,
                         all_logvars.append(logvar.cpu())
                         all_class_logits.append(class_logits.cpu())
                         all_true_labels.append(batch_labels.cpu())
+                        all_latents.append(z.cpu())  # Collect latent samples
             
             # Concatenate
             all_mus = torch.cat(all_mus, dim=0)
             all_logvars = torch.cat(all_logvars, dim=0)
             all_class_logits = torch.cat(all_class_logits, dim=0)
             all_true_labels = torch.cat(all_true_labels, dim=0)
+            all_latents = torch.cat(all_latents, dim=0)
             
             # Compute metrics
             metrics = compute_enhanced_metrics(all_mus, all_logvars, all_class_logits, all_true_labels)
+            
+            # Compute KS-distance for all models (not just DERP-VAE)
+            # This is done during evaluation only, so it doesn't affect training
+            eval_ks_distance = compute_ks_distance_for_latents(all_latents, n_random_projections=10)
             
             test_loss /= test_batches
             test_ks /= test_batches if test_ks > 0 else 1
@@ -164,6 +213,7 @@ def run_celeba_experiment(model, train_loader, test_loader, epochs: int = 10,
                 'epoch': epoch + 1,
                 'test_loss': test_loss,
                 'test_ks': test_ks,
+                'eval_ks_distance': eval_ks_distance,  # KS-distance computed during evaluation
                 **metrics
             }
             
@@ -174,7 +224,8 @@ def run_celeba_experiment(model, train_loader, test_loader, epochs: int = 10,
                 f"Test Loss={test_loss:.4f}, "
                 f"KL Div={metrics['kl_divergence']:.4f}, "
                 f"Accuracy={metrics['classification_accuracy']:.4f}, "
-                f"KS Dist={avg_ks:.4f}"
+                f"KS Dist={avg_ks:.4f}, "
+                f"Eval KS={eval_ks_distance:.4f}"
             )
     
     training_time = time.time() - start_time
@@ -256,7 +307,8 @@ def main():
         logger.info(f"  Classification Accuracy: {final.get('classification_accuracy', 0):.4f}")
         logger.info(f"  Activation Rate: {final.get('activation_rate', 0):.4f}")
         if 'test_ks' in final:
-            logger.info(f"  KS Distance: {final.get('test_ks', 0):.4f}")
+            logger.info(f"  Model KS Distance: {final.get('test_ks', 0):.4f}")
+        logger.info(f"  Evaluation KS Distance: {final.get('eval_ks_distance', 0):.4f}")
         logger.info(f"  Training Time: {result['training_time']:.2f}s")
     
     # Compare results
@@ -280,6 +332,13 @@ def main():
         logger.info(f"  Standard VAE: {baseline['classification_accuracy']:.4f}")
         logger.info(f"  DERP-VAE: {derp['classification_accuracy']:.4f}")
         logger.info(f"  Difference: {acc_diff:+.1f}%")
+        
+        logger.info(f"\nKS Distance (Latent Normality):")
+        logger.info(f"  Standard VAE: {baseline.get('eval_ks_distance', 0):.4f}")
+        logger.info(f"  DERP-VAE: {derp.get('eval_ks_distance', 0):.4f}")
+        if baseline.get('eval_ks_distance', 0) > 0:
+            ks_improvement = (baseline['eval_ks_distance'] - derp['eval_ks_distance']) / baseline['eval_ks_distance'] * 100
+            logger.info(f"  Improvement: {ks_improvement:.1f}%")
     
     # Save results
     results_path = Path("../results")
@@ -313,10 +372,10 @@ def main():
     logger.info(f"\nResults saved to {results_path / 'celeba_experiment_results.json'}")
     
     # Simple visualization
-    plt.figure(figsize=(12, 4))
+    plt.figure(figsize=(15, 4))
     
     # Plot training losses
-    plt.subplot(1, 3, 1)
+    plt.subplot(1, 4, 1)
     for name, result in results.items():
         plt.plot(result['train_losses'], label=name)
     plt.xlabel('Epoch')
@@ -326,7 +385,7 @@ def main():
     plt.grid(True)
     
     # Plot KL divergence comparison
-    plt.subplot(1, 3, 2)
+    plt.subplot(1, 4, 2)
     models = list(results.keys())
     kl_values = [results[m]['final_metrics']['kl_divergence'] for m in models]
     plt.bar(range(len(models)), kl_values)
@@ -337,12 +396,22 @@ def main():
     plt.grid(True, axis='y')
     
     # Plot accuracy comparison
-    plt.subplot(1, 3, 3)
+    plt.subplot(1, 4, 3)
     acc_values = [results[m]['final_metrics']['classification_accuracy'] for m in models]
     plt.bar(range(len(models)), acc_values)
     plt.xlabel('Model')
     plt.ylabel('Accuracy')
     plt.title('Smiling Detection Accuracy')
+    plt.xticks(range(len(models)), [m.replace('_', ' ') for m in models], rotation=45)
+    plt.grid(True, axis='y')
+    
+    # Plot KS-distance comparison
+    plt.subplot(1, 4, 4)
+    ks_values = [results[m]['final_metrics'].get('eval_ks_distance', 0) for m in models]
+    plt.bar(range(len(models)), ks_values)
+    plt.xlabel('Model')
+    plt.ylabel('KS Distance')
+    plt.title('Latent Normality (KS Distance)')
     plt.xticks(range(len(models)), [m.replace('_', ' ') for m in models], rotation=45)
     plt.grid(True, axis='y')
     
