@@ -1,5 +1,3 @@
-# Research Concept & Direction
-
 # Distribution Enforcement via Random Probe and Distribution Nudging
 
 ## Abstract
