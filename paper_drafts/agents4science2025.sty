@@ -1,0 +1,91 @@
+% agents4science2025.sty - Style file for Agents4Science 2025 conference
+% Based on common academic conference formatting standards
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{agents4science2025}[2025/09/13 Agents4Science 2025 style]
+
+% Page layout
+\RequirePackage[letterpaper, margin=1in]{geometry}
+\RequirePackage{times}
+\RequirePackage{helvet}
+\RequirePackage{courier}
+
+% Font sizes
+\renewcommand{\normalsize}{\fontsize{11}{13.2}\selectfont}
+\renewcommand{\small}{\fontsize{10}{12}\selectfont}
+\renewcommand{\footnotesize}{\fontsize{9}{10.8}\selectfont}
+\renewcommand{\scriptsize}{\fontsize{8}{9.6}\selectfont}
+\renewcommand{\tiny}{\fontsize{6}{7.2}\selectfont}
+\renewcommand{\large}{\fontsize{12}{14.4}\selectfont}
+\renewcommand{\Large}{\fontsize{14}{16.8}\selectfont}
+\renewcommand{\LARGE}{\fontsize{17}{20.4}\selectfont}
+\renewcommand{\huge}{\fontsize{20}{24}\selectfont}
+\renewcommand{\Huge}{\fontsize{25}{30}\selectfont}
+
+% Section formatting
+\RequirePackage{titlesec}
+\titleformat{\section}{\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection}{1em}{}
+
+% Abstract formatting
+\renewenvironment{abstract}{%
+  \begin{center}
+    \bfseries Abstract
+  \end{center}
+  \begin{quotation}
+}{%
+  \end{quotation}
+}
+
+% Title formatting
+\renewcommand{\maketitle}{%
+  \begin{center}
+    {\LARGE\bfseries\@title\par}
+    \vspace{1.5em}
+    {\large\@author\par}
+    \vspace{1em}
+    {\normalsize\@date\par}
+  \end{center}
+  \vspace{2em}
+}
+
+% Line spacing
+\RequirePackage{setspace}
+\onehalfspacing
+
+% References
+\RequirePackage{cite}
+\renewcommand{\citepunct}{,\penalty\citepunctpenalty\,}
+\renewcommand{\citedash}{--}
+
+% Captions
+\RequirePackage[font=small,labelfont=bf]{caption}
+
+% Math
+\RequirePackage{amsmath,amsfonts,amssymb}
+
+% Graphics
+\RequirePackage{graphicx}
+
+% Tables
+\RequirePackage{booktabs}
+\RequirePackage{array}
+
+% URLs
+\RequirePackage{url}
+\urlstyle{same}
+
+% Colors (if needed)
+\RequirePackage{xcolor}
+
+% Hyperlinks (if needed)
+\RequirePackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  citecolor=black,
+  urlcolor=black
+}
+
+\endinput
