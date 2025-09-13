@@ -82,7 +82,7 @@ Instead of classical maximum-based Kolmogorov-Smirnov distance:
 D\_max \= max\_x |F₁(x) - F₂(x)|
 
 We employ average-based distance for smooth backpropagation:
-D\_avg \= ∫ |F₁(x) - F₂(x)| dx / ∫ dx * sqrt(n)
+D\_avg \= ∫ |F₁(x) - F₂(x)| dx / ∫ dx \* sqrt(n)
 
 This modification enables gradient-based optimization while preserving statistical discrimination power, facilitating faster convergence.
 
