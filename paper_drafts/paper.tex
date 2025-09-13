@@ -22,14 +22,14 @@ Active Distributional Constraints for Robust Deep Learning}
 \maketitle
 
 \begin{abstract}
-Deep learning models ubiquitously make distributional assumptions about latent representations, yet these assumptions are rarely explicitly enforced during training. We propose \textbf{Distribution Enforcement via Random Probe (DERP)}, a framework that actively enforces distributional constraints through computationally efficient statistical testing integrated into backpropagation. Our approach challenges the prevalent assumption that distributional properties emerge naturally from optimization, instead arguing that explicit enforcement is necessary for robust, interpretable models. We validate DERP across variational autoencoders on CIFAR-10 and CelebA datasets, demonstrating superior distributional compliance (KS distance 0.037 vs 0.057-0.108) and active distributional enforcement while maintaining computational efficiency. The framework represents a paradigm shift from passive to active distributional modeling with broad implications for probabilistic machine learning.
+Deep learning models rely on distributional assumptions about latent representations, yet these assumptions are rarely explicitly enforced during training. We propose \textbf{Distribution Enforcement via Random Probe (DERP)}, a framework that enforces distributional constraints through statistical testing integrated into backpropagation. Our approach explores whether explicit enforcement can improve distributional compliance compared to standard approaches that rely on emergent properties. We evaluate DERP on variational autoencoders using CIFAR-10 and CelebA datasets, showing improved distributional compliance in some cases (KS distance 0.037 vs 0.057 on CelebA) while demonstrating active distributional enforcement during training. DERP maintains computational efficiency with minimal overhead (0-4\%), suggesting potential for broader applications in probabilistic machine learning.
 \end{abstract}
 
 \section{Introduction}
 
 Modern deep learning architectures implicitly rely on distributional assumptions that are fundamental to their theoretical justification yet practically ignored during training. Variational autoencoders assume Gaussian priors \cite{kingma2014auto}, generative adversarial networks assume specific latent distributions \cite{goodfellow2014generative}, and vector quantization methods assume uniform codebook utilization \cite{oord2017neural}—yet these assumptions are treated as emergent properties rather than explicit constraints.
 
-\textbf{The Central Hypothesis.} We hypothesize that the passive treatment of distributional assumptions constitutes a fundamental limitation in current deep learning methodology. Rather than allowing distributions to emerge from optimization dynamics, we argue that \emph{active enforcement} of distributional constraints through dedicated loss terms can dramatically improve model performance, robustness, and interpretability.
+\textbf{The Central Hypothesis.} We hypothesize that the passive treatment of distributional assumptions may limit distributional compliance in current deep learning methodology. Rather than allowing distributions to emerge from optimization dynamics alone, we explore whether \emph{active enforcement} of distributional constraints through dedicated loss terms can improve distributional properties while maintaining model performance.
 
 \subsection{Problem: The Distributional Assumption Gap}
 
@@ -57,7 +57,7 @@ Our key insight extends beyond classical statistical testing: \textbf{Modified K
 \item \textbf{Adaptive Distribution Nudging}: Dynamic adjustment of distributional parameters based on statistical feedback
 \end{enumerate}
 
-We validate DERP's effectiveness across variational autoencoders, demonstrating superior distributional compliance while maintaining reconstruction quality and computational efficiency.
+We evaluate DERP on variational autoencoders, showing improved distributional compliance in some experimental settings while maintaining reasonable reconstruction quality and computational efficiency.
 
 \section{Related Work}
 
@@ -247,19 +247,19 @@ DERP-VAE (5 probes) & \textbf{35.87} & \textbf{0.037} & 99.23\% & 62.6\% & 3186.
 \end{tabular}
 \end{table}
 
-DERP-VAE achieves the best KS distance (0.037), indicating superior distributional matching to the target normal distribution, while maintaining stable KL divergence and healthy activation patterns.
+DERP-VAE achieves improved KS distance (0.037), suggesting better distributional matching to the target normal distribution compared to baselines, while maintaining stable KL divergence and healthy activation patterns.
 
 \subsection{Comprehensive Results Visualization}
 
 Figure~\ref{fig:cifar_results} shows comprehensive CIFAR-10 experimental results across all metrics.
 
-% Note: Figures available in experiments/exp_20250904_192729 cifar/results/experiment_results.png
-% and experiments/exp_20250904_20000 celeba all/results/celeba_results.png
-% Copy to assets/ directory before compilation
+% Note: Actual experimental figures available in:
+% experiments/exp_20250904_192729 cifar/results/experiment_results.png
+% experiments/exp_20250904_20000 celeba all/results/celeba_results.png
 
 \begin{figure}[ht]
 \centering
-% \includegraphics[width=0.9\textwidth]{assets/experiment_results.png}
+% \includegraphics[width=0.9\textwidth]{../experiments/exp_20250904_192729 cifar/results/experiment_results.png}
 \fbox{\parbox{0.9\textwidth}{\centering
 \textbf{CIFAR-10 Experimental Results}\\[0.5em]
 \textit{Training Loss Curves:} All methods converge to ~1915 loss\\[0.2em]
@@ -273,7 +273,7 @@ Figure~\ref{fig:cifar_results} shows comprehensive CIFAR-10 experimental results
 
 \begin{figure}[ht]
 \centering
-% \includegraphics[width=0.9\textwidth]{assets/celeba_results.png}
+% \includegraphics[width=0.9\textwidth]{../experiments/exp_20250904_20000 celeba all/results/celeba_results.png}
 \fbox{\parbox{0.9\textwidth}{\centering
 \textbf{CelebA Experimental Results}\\[0.5em]
 \textit{Training Convergence:} DERP-VAE stable vs $\beta$-VAE rapid initial drop\\[0.2em]
@@ -337,11 +337,11 @@ DERP consistently achieves balanced performance while being the only method with
 
 Our experiments validate three core hypotheses:
 
-\textbf{H1: Active enforcement outperforms passive emergence.} DERP achieves best KS distance performance (0.037) on CelebA and demonstrates unique active enforcement (non-zero training KS) across all experiments, proving the superiority of active distributional constraint enforcement over passive approaches.
+\textbf{H1: Active enforcement shows promise over passive emergence.} DERP achieves improved KS distance performance (0.037) on CelebA and demonstrates unique active enforcement (non-zero training KS) across experiments, suggesting potential benefits of active distributional constraint enforcement.
 
-\textbf{H2: Random projections enable efficient high-dimensional testing.} The Cramér-Wold-based approach scales efficiently, adding only 0-4\% computational overhead while providing rigorous statistical verification. DERP shows computational improvements in some cases (271.3s vs 279.7s on CIFAR-10).
+\textbf{H2: Random projections provide efficient high-dimensional testing.} The Cramér-Wold-based approach scales reasonably, adding 0-4\% computational overhead while providing statistical verification. DERP shows comparable or slightly improved computation times in some cases (271.3s vs 279.7s on CIFAR-10).
 
-\textbf{H3: Differentiable statistical testing integrates with gradient optimization.} Our modified K-S distance enables smooth backpropagation while maintaining statistical power, facilitating practical deployment.
+\textbf{H3: Differentiable statistical testing integrates with gradient optimization.} Our modified K-S distance enables smooth backpropagation while maintaining reasonable statistical discrimination, demonstrating feasibility for practical deployment.
 
 \subsection{Active vs Passive Distributional Modeling}
 
@@ -381,12 +381,12 @@ Key contributions include:
 \item \textbf{Active Distributional Enforcement}: First framework to actively optimize distributional properties during training rather than hoping they emerge passively
 \item \textbf{Efficient High-Dimensional Testing}: Random projection-based approach enabling statistical verification in high-dimensional spaces with minimal computational overhead  
 \item \textbf{Differentiable Statistical Testing}: Modified K-S distance facilitating gradient-based optimization while maintaining statistical power
-\item \textbf{Empirical Validation}: Demonstration of superior distributional compliance (KS distance 0.037 vs 0.057-0.108) and unique active enforcement across CIFAR-10 and CelebA datasets
+\item \textbf{Empirical Validation}: Evidence of improved distributional compliance (KS distance 0.037 vs 0.057 on CelebA) and unique active enforcement across CIFAR-10 and CelebA datasets
 \end{enumerate}
 
-DERP represents a paradigm shift from passive to active distributional modeling with broad implications for variational inference, representation learning, and generative modeling. The framework's computational efficiency and empirical success suggest immediate applicability to production systems requiring robust distributional properties.
+DERP represents a step toward more active distributional modeling with potential applications in variational inference, representation learning, and generative modeling. The framework's computational efficiency and promising initial results suggest potential for broader applications, though further evaluation across diverse settings is needed.
 
-As deep learning continues to rely on increasingly complex distributional assumptions, explicit enforcement mechanisms like DERP become essential tools for building reliable, interpretable, and theoretically grounded models. Our work opens new research directions in probabilistic machine learning, statistical deep learning, and robust optimization.
+As deep learning continues to rely on distributional assumptions, explicit enforcement mechanisms like DERP may provide valuable tools for building more reliable and theoretically grounded models. Our work suggests new research directions in probabilistic machine learning and statistical deep learning, though further investigation is needed to fully understand the scope and limitations of such approaches.
 
 \bibliographystyle{plain}
 \bibliography{references}
