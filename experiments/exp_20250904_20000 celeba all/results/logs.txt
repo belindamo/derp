@@ -1,0 +1,207 @@
+2025-09-12 22:53:23,657 - INFO - Results will be saved to: /Users/bmo/trc-projects/derp/experiments/exp_20250904_20000 celeba all/code/../results
+2025-09-12 22:53:23,657 - INFO - Logs will be saved to: /Users/bmo/trc-projects/derp/experiments/exp_20250904_20000 celeba all/code/../results/logs.txt
+2025-09-12 22:53:23,657 - INFO - Loading CelebA dataset (image_size=64x64)
+2025-09-12 22:53:34,755 - INFO - CelebA loaded with official splits:
+2025-09-12 22:53:34,755 - INFO -   Train: 162770 samples (5086 batches)
+2025-09-12 22:53:34,755 - INFO -   Valid: 19867 samples (621 batches)
+2025-09-12 22:53:34,755 - INFO -   Test: 19962 samples (624 batches)
+2025-09-12 22:53:34,755 - INFO -   Image size: 64x64, Total dims: 12288
+2025-09-12 22:53:34,755 - INFO - Created dataloaders: 5086 train, 621 val, 624 test batches
+2025-09-12 22:53:34,755 - INFO - Model config: input_dim=12288, hidden_dim=512, latent_dim=64
+2025-09-12 22:53:34,755 - INFO - Loss weights: {'classification_weight': 0.5, 'perceptual_weight': 0.3, 'enforcement_weight': 0.5}
+2025-09-12 22:53:34,838 - INFO - 
+============================================================
+2025-09-12 22:53:34,838 - INFO - Running: Standard_VAE
+2025-09-12 22:53:34,838 - INFO - Beta: 1.0
+2025-09-12 22:53:34,839 - INFO - ============================================================
+2025-09-12 22:53:34,839 - INFO - Starting training for Standard_VAE on cpu
+2025-09-12 23:00:50,938 - INFO - Epoch 2: Train Loss=6892.9708, Test Loss=6852.3492, KL Div=48.2343, Accuracy=0.5955, KS Dist=0.0000, Eval KS=0.0597
+2025-09-12 23:08:12,908 - INFO - Epoch 4: Train Loss=6734.5142, Test Loss=6856.5274, KL Div=40.6453, Accuracy=0.5924, KS Dist=0.0000, Eval KS=0.0699
+2025-09-12 23:15:23,026 - INFO - Epoch 6: Train Loss=6682.7843, Test Loss=6876.5650, KL Div=36.6121, Accuracy=0.5842, KS Dist=0.0000, Eval KS=0.0447
+2025-09-12 23:22:06,607 - INFO - Epoch 8: Train Loss=6647.3072, Test Loss=6818.1925, KL Div=35.6308, Accuracy=0.6213, KS Dist=0.0000, Eval KS=0.0524
+2025-09-12 23:28:41,542 - INFO - Epoch 10: Train Loss=6622.7805, Test Loss=6830.6006, KL Div=34.8786, Accuracy=0.6380, KS Dist=0.0000, Eval KS=0.0574
+2025-09-12 23:28:41,544 - INFO - 
+Standard_VAE Final Results:
+2025-09-12 23:28:41,544 - INFO -   Test Loss: 6830.6006
+2025-09-12 23:28:41,544 - INFO -   KL Divergence: 34.8786
+2025-09-12 23:28:41,544 - INFO -   Classification Accuracy: 0.6380
+2025-09-12 23:28:41,544 - INFO -   Activation Rate: 0.9871
+2025-09-12 23:28:41,544 - INFO -   Model KS Distance: 0.0000
+2025-09-12 23:28:41,544 - INFO -   Evaluation KS Distance: 0.0574
+2025-09-12 23:28:41,544 - INFO -   Training Time: 2106.70s
+2025-09-12 23:28:41,544 - INFO - 
+============================================================
+2025-09-12 23:28:41,544 - INFO - Running: Beta_VAE_0.1
+2025-09-12 23:28:41,544 - INFO - Beta: 0.1
+2025-09-12 23:28:41,544 - INFO - ============================================================
+2025-09-12 23:28:41,544 - INFO - Starting training for Beta_VAE_0.1 on cpu
+2025-09-12 23:35:19,257 - INFO - Epoch 2: Train Loss=6725.0380, Test Loss=6784.3175, KL Div=160.6795, Accuracy=0.6070, KS Dist=0.0000, Eval KS=0.1299
+2025-09-12 23:41:58,079 - INFO - Epoch 4: Train Loss=6622.9918, Test Loss=6673.7757, KL Div=152.1873, Accuracy=0.6741, KS Dist=0.0000, Eval KS=0.1038
+2025-09-12 23:48:36,829 - INFO - Epoch 6: Train Loss=6579.6251, Test Loss=6727.7878, KL Div=143.2844, Accuracy=0.7008, KS Dist=0.0000, Eval KS=0.0799
+2025-09-12 23:55:17,248 - INFO - Epoch 8: Train Loss=6551.0449, Test Loss=6711.7539, KL Div=141.0256, Accuracy=0.7059, KS Dist=0.0000, Eval KS=0.0706
+2025-09-13 00:01:55,916 - INFO - Epoch 10: Train Loss=6529.4635, Test Loss=6671.7942, KL Div=140.2418, Accuracy=0.7337, KS Dist=0.0000, Eval KS=0.1084
+2025-09-13 00:01:55,918 - INFO - 
+Beta_VAE_0.1 Final Results:
+2025-09-13 00:01:55,918 - INFO -   Test Loss: 6671.7942
+2025-09-13 00:01:55,919 - INFO -   KL Divergence: 140.2418
+2025-09-13 00:01:55,919 - INFO -   Classification Accuracy: 0.7337
+2025-09-13 00:01:55,919 - INFO -   Activation Rate: 0.8291
+2025-09-13 00:01:55,919 - INFO -   Model KS Distance: 0.0000
+2025-09-13 00:01:55,919 - INFO -   Evaluation KS Distance: 0.1084
+2025-09-13 00:01:55,919 - INFO -   Training Time: 1994.37s
+2025-09-13 00:01:55,919 - INFO - 
+============================================================
+2025-09-13 00:01:55,919 - INFO - Running: DERP_VAE_5probes
+2025-09-13 00:01:55,919 - INFO - Beta: 1.0
+2025-09-13 00:01:55,920 - INFO - ============================================================
+2025-09-13 00:01:55,920 - INFO - Starting training for DERP_VAE_5probes on cpu
+2025-09-13 00:08:39,306 - INFO - Epoch 2: Train Loss=6894.1085, Test Loss=6876.6757, KL Div=47.9247, Accuracy=0.5880, KS Dist=0.4146, Eval KS=0.0720
+2025-09-13 00:15:23,303 - INFO - Epoch 4: Train Loss=6739.4633, Test Loss=6895.8389, KL Div=40.1432, Accuracy=0.5874, KS Dist=0.3754, Eval KS=0.0631
+2025-09-13 00:22:08,811 - INFO - Epoch 6: Train Loss=6689.4294, Test Loss=6780.5269, KL Div=35.2386, Accuracy=0.5901, KS Dist=0.3619, Eval KS=0.0534
+2025-09-13 00:28:55,080 - INFO - Epoch 8: Train Loss=6657.2517, Test Loss=6796.2134, KL Div=34.0526, Accuracy=0.5957, KS Dist=0.3550, Eval KS=0.0490
+2025-09-13 00:35:43,601 - INFO - Epoch 10: Train Loss=6634.0560, Test Loss=6812.8639, KL Div=34.2865, Accuracy=0.6242, KS Dist=0.3492, Eval KS=0.0368
+2025-09-13 00:35:43,604 - INFO - 
+DERP_VAE_5probes Final Results:
+2025-09-13 00:35:43,604 - INFO -   Test Loss: 6812.8639
+2025-09-13 00:35:43,604 - INFO -   KL Divergence: 34.2865
+2025-09-13 00:35:43,604 - INFO -   Classification Accuracy: 0.6242
+2025-09-13 00:35:43,604 - INFO -   Activation Rate: 0.9857
+2025-09-13 00:35:43,604 - INFO -   Model KS Distance: 0.3221
+2025-09-13 00:35:43,604 - INFO -   Evaluation KS Distance: 0.0368
+2025-09-13 00:35:43,604 - INFO -   Training Time: 2027.68s
+2025-09-13 00:35:43,604 - INFO - 
+======================================================================
+2025-09-13 00:35:43,604 - INFO - HYPERPARAMETER SUMMARY TABLE
+2025-09-13 00:35:43,604 - INFO - ======================================================================
+2025-09-13 00:35:43,605 - INFO - Model            | Beta | Input Dim | Hidden Dim | Latent Dim | N Classes | Learning Rate | Batch Size | Image Size | Epochs | Optimizer | LR Scheduler      | Scheduler Patience | Scheduler Factor | Dropout Rate | Grad Clip Norm | N Probes | Enforcement Weight | Probe Dims | Target Distribution
+2025-09-13 00:35:43,605 - INFO - -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2025-09-13 00:35:43,605 - INFO - Standard_VAE     | 1.0  | 12288     | 512        | 64         | 2         | 0.0001        | 32         | 64         | 10     | Adam      | ReduceLROnPlateau | 3                  | 0.5              | 0.2          | 1.0            | N/A      | N/A                | N/A        | N/A                
+2025-09-13 00:35:43,605 - INFO - Beta_VAE_0.1     | 0.1  | 12288     | 512        | 64         | 2         | 0.0001        | 32         | 64         | 10     | Adam      | ReduceLROnPlateau | 3                  | 0.5              | 0.2          | 1.0            | N/A      | N/A                | N/A        | N/A                
+2025-09-13 00:35:43,605 - INFO - DERP_VAE_5probes | 1.0  | 12288     | 512        | 64         | 2         | 0.0001        | 32         | 64         | 10     | Adam      | ReduceLROnPlateau | 3                  | 0.5              | 0.2          | 1.0            | 5        | 0.5                | 64         | Normal             
+2025-09-13 00:35:43,605 - INFO - 
+2025-09-13 00:35:43,605 - INFO - 
+======================================================================
+2025-09-13 00:35:43,605 - INFO - DETAILED HYPERPARAMETER BREAKDOWN
+2025-09-13 00:35:43,605 - INFO - ======================================================================
+2025-09-13 00:35:43,605 - INFO - 
+Standard_VAE:
+2025-09-13 00:35:43,605 - INFO - ------------
+2025-09-13 00:35:43,605 - INFO -   Architecture:
+2025-09-13 00:35:43,605 - INFO -     model_type: Standard VAE
+2025-09-13 00:35:43,605 - INFO -     input_dim: 12288
+2025-09-13 00:35:43,605 - INFO -     hidden_dim: 512
+2025-09-13 00:35:43,605 - INFO -     latent_dim: 64
+2025-09-13 00:35:43,605 - INFO -     n_classes: 2
+2025-09-13 00:35:43,605 - INFO -     encoder_layers: 12288 -> 512 -> 256 -> 64
+2025-09-13 00:35:43,605 - INFO -     decoder_layers: 64 -> 256 -> 512 -> 12288
+2025-09-13 00:35:43,605 - INFO -     classifier_layers: 64 -> 32 -> 2
+2025-09-13 00:35:43,605 - INFO -     activation: ReLU
+2025-09-13 00:35:43,605 - INFO -     output_activation: Sigmoid (reconstruction), None (classification)
+2025-09-13 00:35:43,605 - INFO -     dropout_rate: 0.2
+2025-09-13 00:35:43,605 - INFO -   Training:
+2025-09-13 00:35:43,605 - INFO -     optimizer: Adam
+2025-09-13 00:35:43,605 - INFO -     learning_rate: 0.0001
+2025-09-13 00:35:43,605 - INFO -     lr_scheduler: ReduceLROnPlateau
+2025-09-13 00:35:43,605 - INFO -     scheduler_patience: 3
+2025-09-13 00:35:43,605 - INFO -     scheduler_factor: 0.5
+2025-09-13 00:35:43,605 - INFO -     batch_size: 32
+2025-09-13 00:35:43,605 - INFO -     epochs: 10
+2025-09-13 00:35:43,605 - INFO -     gradient_clip_norm: 1.0
+2025-09-13 00:35:43,605 - INFO -     beta: 1.0
+2025-09-13 00:35:43,605 - INFO -   Loss Components:
+2025-09-13 00:35:43,605 - INFO -     reconstruction_loss: BCE
+2025-09-13 00:35:43,605 - INFO -     kl_divergence_weight: 1.0
+2025-09-13 00:35:43,605 - INFO -     classification_loss: CrossEntropy
+2025-09-13 00:35:43,605 - INFO -     classification_weight: 0.1
+2025-09-13 00:35:43,605 - INFO - 
+Beta_VAE_0.1:
+2025-09-13 00:35:43,605 - INFO - ------------
+2025-09-13 00:35:43,605 - INFO -   Architecture:
+2025-09-13 00:35:43,605 - INFO -     model_type: Standard VAE
+2025-09-13 00:35:43,605 - INFO -     input_dim: 12288
+2025-09-13 00:35:43,605 - INFO -     hidden_dim: 512
+2025-09-13 00:35:43,605 - INFO -     latent_dim: 64
+2025-09-13 00:35:43,605 - INFO -     n_classes: 2
+2025-09-13 00:35:43,605 - INFO -     encoder_layers: 12288 -> 512 -> 256 -> 64
+2025-09-13 00:35:43,605 - INFO -     decoder_layers: 64 -> 256 -> 512 -> 12288
+2025-09-13 00:35:43,605 - INFO -     classifier_layers: 64 -> 32 -> 2
+2025-09-13 00:35:43,605 - INFO -     activation: ReLU
+2025-09-13 00:35:43,605 - INFO -     output_activation: Sigmoid (reconstruction), None (classification)
+2025-09-13 00:35:43,605 - INFO -     dropout_rate: 0.2
+2025-09-13 00:35:43,605 - INFO -   Training:
+2025-09-13 00:35:43,605 - INFO -     optimizer: Adam
+2025-09-13 00:35:43,605 - INFO -     learning_rate: 0.0001
+2025-09-13 00:35:43,606 - INFO -     lr_scheduler: ReduceLROnPlateau
+2025-09-13 00:35:43,606 - INFO -     scheduler_patience: 3
+2025-09-13 00:35:43,606 - INFO -     scheduler_factor: 0.5
+2025-09-13 00:35:43,606 - INFO -     batch_size: 32
+2025-09-13 00:35:43,606 - INFO -     epochs: 10
+2025-09-13 00:35:43,606 - INFO -     gradient_clip_norm: 1.0
+2025-09-13 00:35:43,606 - INFO -     beta: 0.1
+2025-09-13 00:35:43,606 - INFO -   Loss Components:
+2025-09-13 00:35:43,606 - INFO -     reconstruction_loss: BCE
+2025-09-13 00:35:43,606 - INFO -     kl_divergence_weight: 0.1
+2025-09-13 00:35:43,606 - INFO -     classification_loss: CrossEntropy
+2025-09-13 00:35:43,606 - INFO -     classification_weight: 0.1
+2025-09-13 00:35:43,606 - INFO - 
+DERP_VAE_5probes:
+2025-09-13 00:35:43,606 - INFO - ----------------
+2025-09-13 00:35:43,606 - INFO -   Architecture:
+2025-09-13 00:35:43,606 - INFO -     model_type: DERP-VAE
+2025-09-13 00:35:43,606 - INFO -     input_dim: 12288
+2025-09-13 00:35:43,606 - INFO -     hidden_dim: 512
+2025-09-13 00:35:43,606 - INFO -     latent_dim: 64
+2025-09-13 00:35:43,606 - INFO -     n_classes: 2
+2025-09-13 00:35:43,606 - INFO -     encoder_layers: 12288 -> 512 -> 256 -> 64
+2025-09-13 00:35:43,606 - INFO -     decoder_layers: 64 -> 256 -> 512 -> 12288
+2025-09-13 00:35:43,606 - INFO -     classifier_layers: 64 -> 32 -> 2
+2025-09-13 00:35:43,606 - INFO -     activation: ReLU
+2025-09-13 00:35:43,606 - INFO -     output_activation: Sigmoid (reconstruction), None (classification)
+2025-09-13 00:35:43,606 - INFO -     dropout_rate: 0.2
+2025-09-13 00:35:43,606 - INFO -   Training:
+2025-09-13 00:35:43,606 - INFO -     optimizer: Adam
+2025-09-13 00:35:43,606 - INFO -     learning_rate: 0.0001
+2025-09-13 00:35:43,606 - INFO -     lr_scheduler: ReduceLROnPlateau
+2025-09-13 00:35:43,606 - INFO -     scheduler_patience: 3
+2025-09-13 00:35:43,606 - INFO -     scheduler_factor: 0.5
+2025-09-13 00:35:43,606 - INFO -     batch_size: 32
+2025-09-13 00:35:43,606 - INFO -     epochs: 10
+2025-09-13 00:35:43,606 - INFO -     gradient_clip_norm: 1.0
+2025-09-13 00:35:43,606 - INFO -     beta: 1.0
+2025-09-13 00:35:43,606 - INFO -   Loss Components:
+2025-09-13 00:35:43,606 - INFO -     reconstruction_loss: BCE
+2025-09-13 00:35:43,606 - INFO -     kl_divergence_weight: 1.0
+2025-09-13 00:35:43,606 - INFO -     classification_loss: CrossEntropy
+2025-09-13 00:35:43,606 - INFO -     classification_weight: 0.1
+2025-09-13 00:35:43,606 - INFO -   DERP-Specific Parameters:
+2025-09-13 00:35:43,606 - INFO -     n_probes: 5
+2025-09-13 00:35:43,606 - INFO -     enforcement_weight: 0.5
+2025-09-13 00:35:43,606 - INFO -     probe_dimensions: 64
+2025-09-13 00:35:43,606 - INFO -     target_distribution: Standard Normal
+2025-09-13 00:35:43,606 - INFO -     ks_distance_type: Modified (average deviation)
+2025-09-13 00:35:43,606 - INFO -     perceptual_loss_weight: 0.01
+2025-09-13 00:35:43,606 - INFO -     perceptual_loss_layers: ['relu1_2', 'relu2_2', 'relu3_3']
+2025-09-13 00:35:43,607 - INFO - 
+Hyperparameter summary saved to ../results/hyperparameter_summary.md
+2025-09-13 00:35:43,607 - INFO - 
+======================================================================
+2025-09-13 00:35:43,607 - INFO - COMPARISON RESULTS
+2025-09-13 00:35:43,607 - INFO - ======================================================================
+2025-09-13 00:35:43,607 - INFO - 
+KL Divergence:
+2025-09-13 00:35:43,607 - INFO -   Standard VAE: 34.8786
+2025-09-13 00:35:43,607 - INFO -   DERP-VAE: 34.2865
+2025-09-13 00:35:43,607 - INFO -   Improvement: 1.7%
+2025-09-13 00:35:43,607 - INFO - 
+Classification Accuracy (Smiling Detection):
+2025-09-13 00:35:43,607 - INFO -   Standard VAE: 0.6380
+2025-09-13 00:35:43,607 - INFO -   DERP-VAE: 0.6242
+2025-09-13 00:35:43,607 - INFO -   Difference: -1.4%
+2025-09-13 00:35:43,607 - INFO - 
+KS Distance (Latent Normality):
+2025-09-13 00:35:43,607 - INFO -   Standard VAE: 0.0574
+2025-09-13 00:35:43,607 - INFO -   DERP-VAE: 0.0368
+2025-09-13 00:35:43,607 - INFO -   Improvement: 36.0%
+2025-09-13 00:35:43,608 - INFO - 
+Results saved to ../results/celeba_experiment_results.json
+2025-09-13 00:35:43,829 - INFO - Plots saved to ../results/celeba_results.png

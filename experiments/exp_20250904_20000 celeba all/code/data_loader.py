@@ -227,9 +227,9 @@ def verify_data_quality(data: torch.Tensor, labels: torch.Tensor) -> Dict[str, b
 
 def get_celeba_dataloaders(batch_size: int = 64, image_size: int = 64,
                           download: bool = True, data_dir: str = './data',
-                          num_samples: Optional[int] = None) -> Tuple[DataLoader, DataLoader]:
+                          num_samples: Optional[int] = None) -> Tuple[DataLoader, DataLoader, DataLoader]:
     """
-    Get CelebA data loaders for DERP-VAE experiments
+    Get CelebA data loaders for DERP-VAE experiments with proper train/val/test splits
     
     Args:
         batch_size: Batch size for training
@@ -239,7 +239,7 @@ def get_celeba_dataloaders(batch_size: int = 64, image_size: int = 64,
         num_samples: Optional limit on number of samples (for testing)
     
     Returns:
-        train_loader, test_loader
+        train_loader, val_loader, test_loader
     """
     # Define transforms for CelebA
     transform = transforms.Compose([
@@ -247,17 +247,6 @@ def get_celeba_dataloaders(batch_size: int = 64, image_size: int = 64,
         transforms.CenterCrop(image_size),
         transforms.ToTensor(),  # Converts to [0,1] range
     ])
-    
-    # Load CelebA dataset
-    # Note: CelebA has 40 binary attributes we can use as labels
-    # We'll use the 'Smiling' attribute (index 31) as our primary label for classification
-    full_dataset = torchvision.datasets.CelebA(
-        root=data_dir,
-        split='train',  # Use train split
-        target_type='attr',  # Use attributes as labels
-        transform=transform,
-        download=download
-    )
     
     # Process labels to use 'Smiling' attribute as binary classification
     class CelebABinaryWrapper(torch.utils.data.Dataset):
@@ -274,30 +263,61 @@ def get_celeba_dataloaders(batch_size: int = 64, image_size: int = 64,
             label = attrs[self.attr_idx].item()
             return img, label
     
-    wrapped_dataset = CelebABinaryWrapper(full_dataset)
-    
-    # Limit samples if specified
-    if num_samples is not None and num_samples < len(wrapped_dataset):
-        indices = torch.randperm(len(wrapped_dataset))[:num_samples]
-        wrapped_dataset = torch.utils.data.Subset(wrapped_dataset, indices)
-    
-    # Split into train and test
-    dataset_size = len(wrapped_dataset)
-    train_size = int(0.8 * dataset_size)
-    test_size = dataset_size - train_size
-    
-    train_dataset, test_dataset = torch.utils.data.random_split(
-        wrapped_dataset, [train_size, test_size],
-        generator=torch.Generator().manual_seed(42)
+    # Load official CelebA splits
+    train_dataset = torchvision.datasets.CelebA(
+        root=data_dir,
+        split='train',  # Official train split
+        target_type='attr',
+        transform=transform,
+        download=download
     )
+    train_dataset = CelebABinaryWrapper(train_dataset)
     
-    # Create data loaders
+    valid_dataset = torchvision.datasets.CelebA(
+        root=data_dir,
+        split='valid',  # Official validation split
+        target_type='attr',
+        transform=transform,
+        download=False  # Already downloaded
+    )
+    valid_dataset = CelebABinaryWrapper(valid_dataset)
+    
+    test_dataset = torchvision.datasets.CelebA(
+        root=data_dir,
+        split='test',  # Official test split
+        target_type='attr',
+        transform=transform,
+        download=False  # Already downloaded
+    )
+    test_dataset = CelebABinaryWrapper(test_dataset)
+    
+    # Limit samples if specified (for debugging)
+    if num_samples is not None:
+        train_samples = min(num_samples, len(train_dataset))
+        val_samples = min(num_samples // 5, len(valid_dataset))  # Smaller val set
+        test_samples = min(num_samples // 4, len(test_dataset))  # Smaller test set
+        
+        train_dataset = torch.utils.data.Subset(train_dataset, range(train_samples))
+        valid_dataset = torch.utils.data.Subset(valid_dataset, range(val_samples))
+        test_dataset = torch.utils.data.Subset(test_dataset, range(test_samples))
+    
+    # Create data loaders with appropriate settings
     train_loader = DataLoader(
         train_dataset,
         batch_size=batch_size,
         shuffle=True,
-        num_workers=0,  # Avoid multiprocessing issues
-        drop_last=True
+        num_workers=0,  # Set to 0 for debugging, increase for performance
+        drop_last=True,   # Drop last incomplete batch for stable batch norm
+        pin_memory=True
+    )
+    
+    val_loader = DataLoader(
+        valid_dataset,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=0,
+        drop_last=False,
+        pin_memory=True
     )
     
     test_loader = DataLoader(
@@ -305,14 +325,17 @@ def get_celeba_dataloaders(batch_size: int = 64, image_size: int = 64,
         batch_size=batch_size,
         shuffle=False,
         num_workers=0,
-        drop_last=False
+        drop_last=False,
+        pin_memory=True
     )
     
-    logger.info(f"CelebA loaded: {train_size} train samples, {test_size} test samples")
-    logger.info(f"Image size: {image_size}x{image_size}, Total dims: {image_size*image_size*3}")
-    logger.info(f"Created dataloaders: {len(train_loader)} train batches, {len(test_loader)} test batches")
+    logger.info(f"CelebA loaded with official splits:")
+    logger.info(f"  Train: {len(train_dataset)} samples ({len(train_loader)} batches)")
+    logger.info(f"  Valid: {len(valid_dataset)} samples ({len(val_loader)} batches)")
+    logger.info(f"  Test: {len(test_dataset)} samples ({len(test_loader)} batches)")
+    logger.info(f"  Image size: {image_size}x{image_size}, Total dims: {image_size*image_size*3}")
     
-    return train_loader, test_loader
+    return train_loader, val_loader, test_loader
 
 
 def get_cifar10_dataloaders(batch_size: int = 64, normalize: bool = True, 

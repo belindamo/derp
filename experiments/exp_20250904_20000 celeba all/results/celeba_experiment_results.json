@@ -1,0 +1,242 @@
+{
+  "Standard_VAE": {
+    "model_name": "Standard_VAE",
+    "beta": 1.0,
+    "config": {
+      "input_dim": 12288,
+      "hidden_dim": 512,
+      "latent_dim": 64,
+      "n_classes": 2
+    },
+    "final_metrics": {
+      "epoch": 10,
+      "test_loss": 6830.600553854918,
+      "test_ks": 0.0,
+      "eval_ks_distance": 0.057419700920581816,
+      "kl_divergence": 34.87862014770508,
+      "mutual_information": -34.87862014770508,
+      "activation_rate": 0.9871247557859933,
+      "avg_posterior_variance": 0.7013119459152222,
+      "classification_accuracy": 0.6379621028900146
+    },
+    "training_time": 2106.703052043915,
+    "train_losses": [
+      6682.784305550009,
+      6663.943964974317,
+      6647.307186989254,
+      6633.380023747788,
+      6622.780450470655
+    ],
+    "hyperparameters": {
+      "architecture": {
+        "model_type": "Standard VAE",
+        "input_dim": 12288,
+        "hidden_dim": 512,
+        "latent_dim": 64,
+        "n_classes": 2,
+        "encoder_layers": "12288 -> 512 -> 256 -> 64",
+        "decoder_layers": "64 -> 256 -> 512 -> 12288",
+        "classifier_layers": "64 -> 32 -> 2",
+        "activation": "ReLU",
+        "output_activation": "Sigmoid (reconstruction), None (classification)",
+        "dropout_rate": 0.2
+      },
+      "training": {
+        "optimizer": "Adam",
+        "learning_rate": 0.0001,
+        "lr_scheduler": "ReduceLROnPlateau",
+        "scheduler_patience": 3,
+        "scheduler_factor": 0.5,
+        "batch_size": 32,
+        "epochs": 10,
+        "gradient_clip_norm": 1.0,
+        "beta": 1.0
+      },
+      "dataset": {
+        "name": "CelebA",
+        "image_size": "64x64",
+        "channels": 3,
+        "num_samples": "Full dataset (202,599)",
+        "target_attribute": "Smiling",
+        "preprocessing": "Resize to 64x64, normalize to [0,1]"
+      },
+      "loss_components": {
+        "reconstruction_loss": "BCE",
+        "kl_divergence_weight": 1.0,
+        "classification_loss": "CrossEntropy",
+        "classification_weight": 0.1
+      },
+      "compute": {
+        "device": "cpu",
+        "precision": "float32"
+      }
+    }
+  },
+  "Beta_VAE_0.1": {
+    "model_name": "Beta_VAE_0.1",
+    "beta": 0.1,
+    "config": {
+      "input_dim": 12288,
+      "hidden_dim": 512,
+      "latent_dim": 64,
+      "n_classes": 2
+    },
+    "final_metrics": {
+      "epoch": 10,
+      "test_loss": 6671.794216840695,
+      "test_ks": 0.0,
+      "eval_ks_distance": 0.10837174355983734,
+      "kl_divergence": 140.24179077148438,
+      "mutual_information": -140.24179077148438,
+      "activation_rate": 0.8290525435828073,
+      "avg_posterior_variance": 0.01681586727499962,
+      "classification_accuracy": 0.7337440848350525
+    },
+    "training_time": 1994.371934890747,
+    "train_losses": [
+      6579.62505491484,
+      6563.342034871307,
+      6551.044902962022,
+      6539.644693498391,
+      6529.463466942802
+    ],
+    "hyperparameters": {
+      "architecture": {
+        "model_type": "Standard VAE",
+        "input_dim": 12288,
+        "hidden_dim": 512,
+        "latent_dim": 64,
+        "n_classes": 2,
+        "encoder_layers": "12288 -> 512 -> 256 -> 64",
+        "decoder_layers": "64 -> 256 -> 512 -> 12288",
+        "classifier_layers": "64 -> 32 -> 2",
+        "activation": "ReLU",
+        "output_activation": "Sigmoid (reconstruction), None (classification)",
+        "dropout_rate": 0.2
+      },
+      "training": {
+        "optimizer": "Adam",
+        "learning_rate": 0.0001,
+        "lr_scheduler": "ReduceLROnPlateau",
+        "scheduler_patience": 3,
+        "scheduler_factor": 0.5,
+        "batch_size": 32,
+        "epochs": 10,
+        "gradient_clip_norm": 1.0,
+        "beta": 0.1
+      },
+      "dataset": {
+        "name": "CelebA",
+        "image_size": "64x64",
+        "channels": 3,
+        "num_samples": "Full dataset (202,599)",
+        "target_attribute": "Smiling",
+        "preprocessing": "Resize to 64x64, normalize to [0,1]"
+      },
+      "loss_components": {
+        "reconstruction_loss": "BCE",
+        "kl_divergence_weight": 0.1,
+        "classification_loss": "CrossEntropy",
+        "classification_weight": 0.1
+      },
+      "compute": {
+        "device": "cpu",
+        "precision": "float32"
+      }
+    }
+  },
+  "DERP_VAE_5probes": {
+    "model_name": "DERP_VAE_5probes",
+    "beta": 1.0,
+    "config": {
+      "input_dim": 12288,
+      "hidden_dim": 512,
+      "latent_dim": 64,
+      "n_classes": 2
+    },
+    "final_metrics": {
+      "epoch": 10,
+      "test_loss": 6812.863887689053,
+      "test_ks": 0.32211788910894823,
+      "eval_ks_distance": 0.03675551861524582,
+      "kl_divergence": 34.28651428222656,
+      "mutual_information": -34.28651428222656,
+      "activation_rate": 0.9856649509067228,
+      "avg_posterior_variance": 0.7008808851242065,
+      "classification_accuracy": 0.6242360472679138
+    },
+    "training_time": 2027.6813538074493,
+    "train_losses": [
+      6689.42942991868,
+      6670.241459110333,
+      6657.251655029585,
+      6645.754277213183,
+      6634.056014672631
+    ],
+    "hyperparameters": {
+      "architecture": {
+        "model_type": "DERP-VAE",
+        "input_dim": 12288,
+        "hidden_dim": 512,
+        "latent_dim": 64,
+        "n_classes": 2,
+        "encoder_layers": "12288 -> 512 -> 256 -> 64",
+        "decoder_layers": "64 -> 256 -> 512 -> 12288",
+        "classifier_layers": "64 -> 32 -> 2",
+        "activation": "ReLU",
+        "output_activation": "Sigmoid (reconstruction), None (classification)",
+        "dropout_rate": 0.2
+      },
+      "training": {
+        "optimizer": "Adam",
+        "learning_rate": 0.0001,
+        "lr_scheduler": "ReduceLROnPlateau",
+        "scheduler_patience": 3,
+        "scheduler_factor": 0.5,
+        "batch_size": 32,
+        "epochs": 10,
+        "gradient_clip_norm": 1.0,
+        "beta": 1.0
+      },
+      "dataset": {
+        "name": "CelebA",
+        "image_size": "64x64",
+        "channels": 3,
+        "num_samples": "Full dataset (202,599)",
+        "target_attribute": "Smiling",
+        "preprocessing": "Resize to 64x64, normalize to [0,1]"
+      },
+      "loss_components": {
+        "reconstruction_loss": "BCE",
+        "kl_divergence_weight": 1.0,
+        "classification_loss": "CrossEntropy",
+        "classification_weight": 0.1
+      },
+      "compute": {
+        "device": "cpu",
+        "precision": "float32"
+      },
+      "derp_specific": {
+        "n_probes": 5,
+        "enforcement_weight": 0.5,
+        "probe_dimensions": 64,
+        "target_distribution": "Standard Normal",
+        "ks_distance_type": "Modified (average deviation)",
+        "perceptual_loss_weight": 0.01,
+        "perceptual_loss_layers": [
+          "relu1_2",
+          "relu2_2",
+          "relu3_3"
+        ]
+      }
+    }
+  },
+  "experiment_config": {
+    "dataset": "CelebA",
+    "image_size": 64,
+    "batch_size": 32,
+    "num_samples": null,
+    "epochs": 10,
+    "device": "cpu"
+  }
+}

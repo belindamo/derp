@@ -15,6 +15,7 @@ import logging
 from pathlib import Path
 import time
 import sys
+import traceback
 import matplotlib.pyplot as plt
 
 # Add current directory to Python path
@@ -24,8 +25,7 @@ sys.path.append('.')
 from derp_vae import DERP_VAE, EnhancedStandardVAE as StandardVAE, compute_enhanced_metrics, enhanced_statistical_test
 from data_loader import get_celeba_dataloaders
 
-# Set up logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+# Set up logging - will be reconfigured in main() to use the correct results path
 logger = logging.getLogger(__name__)
 
 
@@ -35,6 +35,10 @@ def set_seeds(seed: int = 42):
     np.random.seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
+    
+    # Set deterministic mode for reproducibility
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
 
 
 def compute_ks_distance_for_latents(latent_samples: torch.Tensor, n_random_projections: int = 10) -> float:
@@ -80,11 +84,11 @@ def compute_ks_distance_for_latents(latent_samples: torch.Tensor, n_random_proje
 
 
 def get_celeba_dataset(batch_size: int = 32, image_size: int = 64, num_samples: int = None):
-    """Get CelebA dataset loaders"""
+    """Get CelebA dataset loaders with proper train/val/test splits"""
     logger.info(f"Loading CelebA dataset (image_size={image_size}x{image_size})")
     
-    # Get CelebA dataloaders
-    train_loader, test_loader = get_celeba_dataloaders(
+    # Get CelebA dataloaders with official splits
+    train_loader, val_loader, test_loader = get_celeba_dataloaders(
         batch_size=batch_size,
         image_size=image_size,
         download=True,
@@ -92,13 +96,14 @@ def get_celeba_dataset(batch_size: int = 32, image_size: int = 64, num_samples: 
         num_samples=num_samples  # Limit samples for testing
     )
     
-    logger.info(f"Created dataloaders: {len(train_loader)} train batches, {len(test_loader)} test batches")
+    logger.info(f"Created dataloaders: {len(train_loader)} train, {len(val_loader)} val, {len(test_loader)} test batches")
     
-    return train_loader, test_loader
+    return train_loader, val_loader, test_loader
 
 
 def run_celeba_experiment(model, train_loader, test_loader, epochs: int = 10, 
-                         beta: float = 1.0, model_name: str = "Model", device: str = 'cpu'):
+                         beta: float = 1.0, model_name: str = "Model", device: str = 'cpu',
+                         loss_weights: dict = None):
     """Run training and evaluation on CelebA"""
     
     model = model.to(device)
@@ -131,7 +136,15 @@ def run_celeba_experiment(model, train_loader, test_loader, epochs: int = 10,
             optimizer.zero_grad()
             
             # Forward pass
-            loss_dict = model.compute_loss(batch_data_flat, batch_labels, beta=beta)
+            # DERP_VAE already has loss weights set in constructor
+            if isinstance(model, DERP_VAE):
+                loss_dict = model.compute_loss(batch_data_flat, batch_labels, beta=beta)
+            elif loss_weights and hasattr(model, 'compute_loss'):
+                loss_dict = model.compute_loss(batch_data_flat, batch_labels, beta=beta, 
+                                             classification_weight=loss_weights.get('classification_weight', 0.5),
+                                             perceptual_weight=loss_weights.get('perceptual_weight', 0.3))
+            else:
+                loss_dict = model.compute_loss(batch_data_flat, batch_labels, beta=beta)
             loss = loss_dict['total_loss']
             
             # Backward pass
@@ -177,20 +190,27 @@ def run_celeba_experiment(model, train_loader, test_loader, epochs: int = 10,
                     batch_data_flat = batch_data.view(batch_data.size(0), -1)
                     
                     # Compute test loss
-                    loss_dict = model.compute_loss(batch_data_flat, batch_labels, beta=beta)
+                    # DERP_VAE already has loss weights set in constructor
+                    if isinstance(model, DERP_VAE):
+                        loss_dict = model.compute_loss(batch_data_flat, batch_labels, beta=beta)
+                    elif loss_weights and hasattr(model, 'compute_loss'):
+                        loss_dict = model.compute_loss(batch_data_flat, batch_labels, beta=beta,
+                                                     classification_weight=loss_weights.get('classification_weight', 0.5),
+                                                     perceptual_weight=loss_weights.get('perceptual_weight', 0.3))
+                    else:
+                        loss_dict = model.compute_loss(batch_data_flat, batch_labels, beta=beta)
                     test_loss += loss_dict['total_loss'].item()
                     if 'ks_distance' in loss_dict:
                         test_ks += loss_dict['ks_distance'].item()
                     test_batches += 1
                     
-                    # Collect samples (limit to prevent memory issues)
-                    if len(all_mus) < 50:  # Collect first 50 batches
-                        _, class_logits, mu, logvar, z = model.forward(batch_data_flat)
-                        all_mus.append(mu.cpu())
-                        all_logvars.append(logvar.cpu())
-                        all_class_logits.append(class_logits.cpu())
-                        all_true_labels.append(batch_labels.cpu())
-                        all_latents.append(z.cpu())  # Collect latent samples
+                    # Collect samples for evaluation metrics
+                    _, class_logits, mu, logvar, z = model.forward(batch_data_flat)
+                    all_mus.append(mu.cpu())
+                    all_logvars.append(logvar.cpu())
+                    all_class_logits.append(class_logits.cpu())
+                    all_true_labels.append(batch_labels.cpu())
+                    all_latents.append(z.cpu())  # Collect latent samples
             
             # Concatenate
             all_mus = torch.cat(all_mus, dim=0)
@@ -255,8 +275,32 @@ def main():
     NUM_SAMPLES = None  # Use full dataset (202,599 images)
     EPOCHS = 10  # Number of epochs
     
-    # Get CelebA dataset
-    train_loader, test_loader = get_celeba_dataset(
+    # Create results directory early to avoid UnboundLocalError
+    results_path = Path("../results")
+    results_path.mkdir(exist_ok=True)
+    
+    # Configure logging to save to file
+    log_file = results_path / "logs.txt"
+    
+    # Remove existing handlers
+    for handler in logging.root.handlers[:]:
+        logging.root.removeHandler(handler)
+    
+    # Set up file and console logging
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler(log_file),
+            logging.StreamHandler()  # Also print to console
+        ]
+    )
+    
+    logger.info(f"Results will be saved to: {results_path.absolute()}")
+    logger.info(f"Logs will be saved to: {log_file.absolute()}")
+    
+    # Get CelebA dataset with proper splits
+    train_loader, val_loader, test_loader = get_celeba_dataset(
         batch_size=BATCH_SIZE,
         image_size=IMAGE_SIZE,
         num_samples=NUM_SAMPLES
@@ -274,11 +318,20 @@ def main():
                 f"hidden_dim={base_config['hidden_dim']}, "
                 f"latent_dim={base_config['latent_dim']}")
     
+    # Loss weight configuration (now exposed as hyperparameters)
+    loss_weights = {
+        'classification_weight': 0.5,
+        'perceptual_weight': 0.3,
+        'enforcement_weight': 0.5
+    }
+    
+    logger.info(f"Loss weights: {loss_weights}")
+    
     # Define experiments
     experiments = [
         ('Standard_VAE', StandardVAE(**base_config), 1.0),
         ('Beta_VAE_0.1', StandardVAE(**base_config), 0.1),  # Lower beta for complex images
-        ('DERP_VAE_5probes', DERP_VAE(**base_config, n_probes=5, enforcement_weight=0.5, device=device), 1.0),
+        ('DERP_VAE_5probes', DERP_VAE(**base_config, n_probes=5, **loss_weights, device=device), 1.0),
     ]
     
     results = {}
@@ -290,26 +343,43 @@ def main():
         logger.info(f"Beta: {beta}")
         logger.info(f"{'='*60}")
         
-        result = run_celeba_experiment(
-            model, train_loader, test_loader, 
-            epochs=EPOCHS, beta=beta, model_name=name, device=device
-        )
-        result['model_name'] = name
-        result['beta'] = beta
-        result['config'] = base_config.copy()
-        results[name] = result
-        
-        # Print summary
-        final = result['final_metrics']
-        logger.info(f"\n{name} Final Results:")
-        logger.info(f"  Test Loss: {final.get('test_loss', 0):.4f}")
-        logger.info(f"  KL Divergence: {final.get('kl_divergence', 0):.4f}")
-        logger.info(f"  Classification Accuracy: {final.get('classification_accuracy', 0):.4f}")
-        logger.info(f"  Activation Rate: {final.get('activation_rate', 0):.4f}")
-        if 'test_ks' in final:
-            logger.info(f"  Model KS Distance: {final.get('test_ks', 0):.4f}")
-        logger.info(f"  Evaluation KS Distance: {final.get('eval_ks_distance', 0):.4f}")
-        logger.info(f"  Training Time: {result['training_time']:.2f}s")
+        try:
+            result = run_celeba_experiment(
+                model, train_loader, test_loader, 
+                epochs=EPOCHS, beta=beta, model_name=name, device=device,
+                loss_weights=loss_weights
+            )
+            result['model_name'] = name
+            result['beta'] = beta
+            result['config'] = base_config.copy()
+            results[name] = result
+            
+            # Print summary
+            final = result['final_metrics']
+            logger.info(f"\n{name} Final Results:")
+            logger.info(f"  Test Loss: {final.get('test_loss', 0):.4f}")
+            logger.info(f"  KL Divergence: {final.get('kl_divergence', 0):.4f}")
+            logger.info(f"  Classification Accuracy: {final.get('classification_accuracy', 0):.4f}")
+            logger.info(f"  Activation Rate: {final.get('activation_rate', 0):.4f}")
+            if 'test_ks' in final:
+                logger.info(f"  Model KS Distance: {final.get('test_ks', 0):.4f}")
+            logger.info(f"  Evaluation KS Distance: {final.get('eval_ks_distance', 0):.4f}")
+            logger.info(f"  Training Time: {result['training_time']:.2f}s")
+        except Exception as e:
+            logger.error(f"Error training {name}: {str(e)}")
+            logger.error(f"Traceback: {traceback.format_exc()}")
+            # Store partial results
+            results[name] = {
+                'error': str(e),
+                'train_losses': [],
+                'test_losses': [],
+                'test_metrics': [],
+                'training_time': 0,
+                'final_metrics': {},
+                'model_name': name,
+                'beta': beta,
+                'config': base_config.copy()
+            }
     
     # Print hyperparameter table
     logger.info("\n" + "="*70)
@@ -467,29 +537,34 @@ def main():
                 logger.info(f"    {key}: {value}")
     
     # Save hyperparameter summary to markdown file
-    with open(results_path / "hyperparameter_summary.md", 'w') as f:
-        f.write("# CelebA Experiment Hyperparameter Summary\n\n")
-        f.write("## Quick Reference Table\n\n")
-        
-        # Write markdown table
-        headers = list(hyperparam_table[0].keys())
-        f.write("| " + " | ".join(headers) + " |\n")
-        f.write("| " + " | ".join(["-" * len(h) for h in headers]) + " |\n")
-        for row in hyperparam_table:
-            f.write("| " + " | ".join(str(row.get(h, '')) for h in headers) + " |\n")
-        
-        f.write("\n## Detailed Configuration\n\n")
-        for name in hyperparameters_summary:
-            f.write(f"### {name}\n\n")
-            hp = hyperparameters_summary[name]
+    try:
+        with open(results_path / "hyperparameter_summary.md", 'w') as f:
+            f.write("# CelebA Experiment Hyperparameter Summary\n\n")
+            f.write("## Quick Reference Table\n\n")
             
-            for section, params in hp.items():
-                f.write(f"#### {section.replace('_', ' ').title()}\n")
-                for key, value in params.items():
-                    f.write(f"- **{key.replace('_', ' ').title()}**: {value}\n")
-                f.write("\n")
-    
-    logger.info(f"\nHyperparameter summary saved to {results_path / 'hyperparameter_summary.md'}")
+            # Write markdown table
+            headers = list(hyperparam_table[0].keys()) if hyperparam_table else []
+            if headers:
+                f.write("| " + " | ".join(headers) + " |\n")
+                f.write("| " + " | ".join(["-" * len(h) for h in headers]) + " |\n")
+                for row in hyperparam_table:
+                    f.write("| " + " | ".join(str(row.get(h, '')) for h in headers) + " |\n")
+            
+            f.write("\n## Detailed Configuration\n\n")
+            for name in hyperparameters_summary:
+                f.write(f"### {name}\n\n")
+                hp = hyperparameters_summary[name]
+                
+                for section, params in hp.items():
+                    f.write(f"#### {section.replace('_', ' ').title()}\n")
+                    for key, value in params.items():
+                        f.write(f"- **{key.replace('_', ' ').title()}**: {value}\n")
+                    f.write("\n")
+        
+        logger.info(f"\nHyperparameter summary saved to {results_path / 'hyperparameter_summary.md'}")
+    except Exception as e:
+        logger.error(f"Error saving hyperparameter summary: {str(e)}")
+        logger.error(f"Traceback: {traceback.format_exc()}")
     
     # Compare results
     logger.info("\n" + "="*70)
@@ -520,9 +595,7 @@ def main():
             ks_improvement = (baseline['eval_ks_distance'] - derp['eval_ks_distance']) / baseline['eval_ks_distance'] * 100
             logger.info(f"  Improvement: {ks_improvement:.1f}%")
     
-    # Save results
-    results_path = Path("../results")
-    results_path.mkdir(exist_ok=True)
+    # Save results (results_path already defined at the beginning of main())
     
     # Save to JSON (hyperparameters_summary already created above)
     json_results = {
@@ -547,61 +620,98 @@ def main():
         'device': device
     }
     
-    with open(results_path / "celeba_experiment_results.json", 'w') as f:
-        json.dump(json_results, f, indent=2)
-    
-    logger.info(f"\nResults saved to {results_path / 'celeba_experiment_results.json'}")
+    try:
+        with open(results_path / "celeba_experiment_results.json", 'w') as f:
+            json.dump(json_results, f, indent=2)
+        
+        logger.info(f"\nResults saved to {results_path / 'celeba_experiment_results.json'}")
+    except Exception as e:
+        logger.error(f"Error saving JSON results: {str(e)}")
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        # Try to save partial results
+        try:
+            with open(results_path / "celeba_experiment_results_partial.json", 'w') as f:
+                json.dump(results, f, indent=2)
+            logger.info("Saved partial results to celeba_experiment_results_partial.json")
+        except Exception as e2:
+            logger.error(f"Failed to save even partial results: {str(e2)}")
     
     # Simple visualization
-    plt.figure(figsize=(15, 4))
-    
-    # Plot training losses
-    plt.subplot(1, 4, 1)
-    for name, result in results.items():
-        plt.plot(result['train_losses'], label=name)
-    plt.xlabel('Epoch')
-    plt.ylabel('Training Loss')
-    plt.title('Training Loss Curves')
-    plt.legend()
-    plt.grid(True)
-    
-    # Plot KL divergence comparison
-    plt.subplot(1, 4, 2)
-    models = list(results.keys())
-    kl_values = [results[m]['final_metrics']['kl_divergence'] for m in models]
-    plt.bar(range(len(models)), kl_values)
-    plt.xlabel('Model')
-    plt.ylabel('KL Divergence')
-    plt.title('Final KL Divergence')
-    plt.xticks(range(len(models)), [m.replace('_', ' ') for m in models], rotation=45)
-    plt.grid(True, axis='y')
-    
-    # Plot accuracy comparison
-    plt.subplot(1, 4, 3)
-    acc_values = [results[m]['final_metrics']['classification_accuracy'] for m in models]
-    plt.bar(range(len(models)), acc_values)
-    plt.xlabel('Model')
-    plt.ylabel('Accuracy')
-    plt.title('Smiling Detection Accuracy')
-    plt.xticks(range(len(models)), [m.replace('_', ' ') for m in models], rotation=45)
-    plt.grid(True, axis='y')
-    
-    # Plot KS-distance comparison
-    plt.subplot(1, 4, 4)
-    ks_values = [results[m]['final_metrics'].get('eval_ks_distance', 0) for m in models]
-    plt.bar(range(len(models)), ks_values)
-    plt.xlabel('Model')
-    plt.ylabel('KS Distance')
-    plt.title('Latent Normality (KS Distance)')
-    plt.xticks(range(len(models)), [m.replace('_', ' ') for m in models], rotation=45)
-    plt.grid(True, axis='y')
-    
-    plt.tight_layout()
-    plt.savefig(results_path / 'celeba_results.png', dpi=150, bbox_inches='tight')
-    logger.info(f"Plots saved to {results_path / 'celeba_results.png'}")
+    try:
+        plt.figure(figsize=(15, 4))
+        
+        # Plot training losses
+        plt.subplot(1, 4, 1)
+        for name, result in results.items():
+            if 'train_losses' in result and result['train_losses']:
+                plt.plot(result['train_losses'], label=name)
+        plt.xlabel('Epoch')
+        plt.ylabel('Training Loss')
+        plt.title('Training Loss Curves')
+        plt.legend()
+        plt.grid(True)
+        
+        # Plot KL divergence comparison
+        plt.subplot(1, 4, 2)
+        models = list(results.keys())
+        kl_values = [results[m]['final_metrics'].get('kl_divergence', 0) for m in models]
+        plt.bar(range(len(models)), kl_values)
+        plt.xlabel('Model')
+        plt.ylabel('KL Divergence')
+        plt.title('Final KL Divergence')
+        plt.xticks(range(len(models)), [m.replace('_', ' ') for m in models], rotation=45)
+        plt.grid(True, axis='y')
+        
+        # Plot accuracy comparison
+        plt.subplot(1, 4, 3)
+        acc_values = [results[m]['final_metrics'].get('classification_accuracy', 0) for m in models]
+        plt.bar(range(len(models)), acc_values)
+        plt.xlabel('Model')
+        plt.ylabel('Accuracy')
+        plt.title('Smiling Detection Accuracy')
+        plt.xticks(range(len(models)), [m.replace('_', ' ') for m in models], rotation=45)
+        plt.grid(True, axis='y')
+        
+        # Plot KS-distance comparison
+        plt.subplot(1, 4, 4)
+        ks_values = [results[m]['final_metrics'].get('eval_ks_distance', 0) for m in models]
+        plt.bar(range(len(models)), ks_values)
+        plt.xlabel('Model')
+        plt.ylabel('KS Distance')
+        plt.title('Latent Normality (KS Distance)')
+        plt.xticks(range(len(models)), [m.replace('_', ' ') for m in models], rotation=45)
+        plt.grid(True, axis='y')
+        
+        plt.tight_layout()
+        plt.savefig(results_path / 'celeba_results.png', dpi=150, bbox_inches='tight')
+        logger.info(f"Plots saved to {results_path / 'celeba_results.png'}")
+    except Exception as e:
+        logger.error(f"Error creating plots: {str(e)}")
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        plt.close()  # Clean up figure if error occurred
     
     return results
 
 
 if __name__ == "__main__":
-    results = main()
+    try:
+        results = main()
+    except Exception as e:
+        # Create a basic logger if main() hasn't set it up yet
+        if not logging.root.handlers:
+            results_path = Path("../results")
+            results_path.mkdir(exist_ok=True)
+            log_file = results_path / "logs.txt"
+            logging.basicConfig(
+                level=logging.INFO,
+                format='%(asctime)s - %(levelname)s - %(message)s',
+                handlers=[
+                    logging.FileHandler(log_file),
+                    logging.StreamHandler()
+                ]
+            )
+        
+        logger = logging.getLogger(__name__)
+        logger.error(f"Fatal error in main: {str(e)}")
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        raise
